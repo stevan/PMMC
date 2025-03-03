@@ -18,6 +18,10 @@ async function Test003 () {
             new Tokenizer(
                 new Sources.FromArray(
                     [
+                        `
+                            %:: HTML
+                            %:: std.string
+                        `,
                         ':: Foo',
                         ': double SWAP * ;',
                         ';;',
@@ -37,7 +41,9 @@ async function Test003 () {
         console.log("GOT", input);
     }
 
-    console.log(stream.getCatalog());
+    let vol  = stream.getCatalog().shelf.get('Foo') as Dictionary.Volume;
+    let word = vol.entries.get('double') as Dictionary.UserWord;
+    console.log(word.body);
 }
 
 Test003();

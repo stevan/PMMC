@@ -8,6 +8,14 @@ export class Parser implements Types.Flow<Types.ParsedStream> {
         this.$tokens = tokens;
     }
 
+    async getIdentifier (stream : Types.TokenStream) : Promise<Types.Parsed> {
+        return stream.next().then((ident) => {
+            if (ident.done)
+                throw new Error("Unexpected end of source, expect identifier");
+            return { type : Types.ParsedType.IDENTIFIER, token : ident.value as Types.Token };
+        })
+    }
+
     async *flow () : Types.ParsedStream {
         let flow = this.$tokens.flow();
         for await (const token of flow) {
@@ -20,24 +28,21 @@ export class Parser implements Types.Flow<Types.ParsedStream> {
             case Types.TokenType.WORD:
                 switch (token.source) {
                 // definitions
+                case '%::':
+                    yield { type : Types.ParsedType.IMPORT, token : token };
+                    yield this.getIdentifier(flow);
+                    break;
+                // definitions
                 case '::':
                     yield { type : Types.ParsedType.MOD_BEGIN, token : token };
-                    let mod_name = await flow.next();
-                    if (mod_name.done)
-                        throw new Error("Unexpected end of source, expected module name");
-
-                    yield { type : Types.ParsedType.IDENTIFIER, token : mod_name.value as Types.Token };
-                    break;
-                case ';;':
-                    yield { type : Types.ParsedType.MOD_END, token : token };
+                    yield this.getIdentifier(flow);
                     break;
                 case ':':
                     yield { type : Types.ParsedType.WORD_BEGIN, token : token };
-                    let word_name = await flow.next();
-                    if (word_name.done)
-                        throw new Error("Unexpected end of source, expect word name");
-
-                    yield { type : Types.ParsedType.IDENTIFIER, token : word_name.value as Types.Token };
+                    yield this.getIdentifier(flow);
+                    break;
+                case ';;':
+                    yield { type : Types.ParsedType.MOD_END, token : token };
                     break;
                 case ';':
                     yield { type : Types.ParsedType.WORD_END, token : token };

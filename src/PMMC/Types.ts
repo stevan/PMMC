@@ -1,8 +1,18 @@
 
 export namespace Types {
 
+    export interface Runtime {
+        stack   : any[];
+        control : any[];
+    }
+
     export interface Flow<T> {
         flow () : T;
+    }
+
+    export interface Tape<T> {
+        load (t : T) : void;
+        flow ()      : Stream<T>;
     }
 
     export type Stream<T> = AsyncGenerator<T, void, void>;
@@ -15,7 +25,7 @@ export namespace Types {
     export type SourceStream = Stream<Source>;
 
     // -------------------------------------------------------------------------
-    // Tokens
+    // Tokens (rename to Lexed)
     // -------------------------------------------------------------------------
 
     export enum TokenType {
@@ -39,6 +49,7 @@ export namespace Types {
         MOD_END    = 'MOD_END',
         WORD_BEGIN = 'WORD_BEGIN',
         WORD_END   = 'WORD_END',
+        IMPORT     = 'IMPORT',
         KEYWORD    = 'KEYWORD',
         LITERAL    = 'LITERAL',
         CALL       = 'CALL',

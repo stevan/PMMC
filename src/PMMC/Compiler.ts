@@ -13,24 +13,32 @@ export class Compiler implements Types.Flow<Types.CompiledStream> {
 
     getCatalog () : Dictionary.Catalog { return this.$catalog }
 
+    async getIdentifier (stream : Types.ParsedStream) : Promise<Types.Parsed> {
+        return stream.next().then((ident) => {
+            if (ident.done)
+                throw new Error("Unexpected end of source, expect identifier");
+            return ident.value;
+        })
+    }
+
     async *flow () : Types.CompiledStream {
         let flow = this.$parsed.flow();
         for await (const parsed of flow) {
             switch (parsed.type) {
+            case Types.ParsedType.IMPORT:
+                let import_name = await this.getIdentifier(flow);
+                console.log("TODO", import_name);
+                break;
             case Types.ParsedType.MOD_BEGIN:
-                let mod_name = await flow.next();
-                if (mod_name.done)
-                    throw new Error("Unexpected end of parsed stream, expected module name");
-                this.$catalog.createVolume(mod_name.value.token.source);
+                let mod_name = await this.getIdentifier(flow);
+                this.$catalog.createVolume(mod_name.token.source);
+                break;
+            case Types.ParsedType.WORD_BEGIN:
+                let word_name = await this.getIdentifier(flow);
+                this.$catalog.currentVolume().createUserWord(word_name.token.source);
                 break;
             case Types.ParsedType.MOD_END:
                 this.$catalog.exitCurrentVolume();
-                break;
-            case Types.ParsedType.WORD_BEGIN:
-                let word_name = await flow.next();
-                if (word_name.done)
-                    throw new Error("Unexpected end of parsed stream, expected word name");
-                this.$catalog.currentVolume().createUserWord(word_name.value.token.source);
                 break;
             case Types.ParsedType.WORD_END:
                 this.$catalog.currentVolume().exitCurrentWord();
@@ -39,9 +47,9 @@ export class Compiler implements Types.Flow<Types.CompiledStream> {
             case Types.ParsedType.CALL:
             case Types.ParsedType.LITERAL:
                 let type : string = parsed.type as string;
-                let compiled = { type : type as Types.CompiledType, parsed : parsed }
+                let compiled = { type : type as Types.CompiledType, parsed : parsed };
                 if (this.$catalog.currentVolume().hasCurrentWord()) {
-                    this.$catalog.currentVolume().currentWord().body.push(compiled);
+                    this.$catalog.currentVolume().currentWord().body.load(compiled);
                 }
                 else {
                     yield compiled;

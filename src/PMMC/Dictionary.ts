@@ -1,11 +1,11 @@
 
-//import { Types } from './Types';
+import { Types } from './Types';
+import { Tapes } from './Tapes';
 
 export namespace Dictionary {
 
-    // FIXME ...
-    type UserWordBody   = Compiled[];
-    type NativeWordBody = () => void;
+    type UserWordBody   = Tapes.CompiledTape;
+    type NativeWordBody = (runtime : Types.Runtime) => void;
 
     type WordRef = { name : string };
 
@@ -60,7 +60,11 @@ export namespace Dictionary {
 
         createUserWord (name : string) : UserWord {
             //console.log('creating word', name);
-            let userWord = { type : 'USER', name : name, body : [] as UserWordBody } as UserWord;
+            let userWord = {
+                type : 'USER',
+                name : name,
+                body : new Tapes.CompiledTape()
+            } as UserWord;
             this.entries.set(name, userWord);
             this.current = userWord;
             return userWord;

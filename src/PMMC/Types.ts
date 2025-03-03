@@ -30,22 +30,34 @@ export namespace Types {
     export type TokenStream = Stream<Token>;
 
     // -------------------------------------------------------------------------
-    // Syntax Tokens
+    // Parsed Tokens
     // -------------------------------------------------------------------------
 
     export enum ParsedType {
         IDENTIFIER = 'IDENTIFIER',
+        MOD_BEGIN  = 'MOD_BEGIN',
+        MOD_END    = 'MOD_END',
+        WORD_BEGIN = 'WORD_BEGIN',
+        WORD_END   = 'WORD_END',
         KEYWORD    = 'KEYWORD',
-        PUSH_CONST = 'PUSH_CONST',
-        CALL_WORD  = 'CALL_WORD',
-        BEGIN_MOD  = 'BEGIN_MOD',
-        END_MOD    = 'END_MOD',
-        BEGIN_WORD = 'BEGIN_WORD',
-        END_WORD   = 'END_WORD',
+        LITERAL    = 'LITERAL',
+        CALL       = 'CALL',
     }
 
     export type Parsed       = { type : ParsedType, token : Token };
     export type ParsedStream = Stream<Parsed>;
 
+    // -------------------------------------------------------------------------
+    // Compiler Tokens
+    // -------------------------------------------------------------------------
+
+    export enum CompiledType {
+        KEYWORD = 'KEYWORD',
+        LITERAL = 'LITERAL',
+        CALL    = 'CALL',
+    }
+
+    export type Compiled       = { type : CompiledType, parsed : Parsed };
+    export type CompiledStream = Stream<Compiled>;
 
 }

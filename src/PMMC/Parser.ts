@@ -15,13 +15,13 @@ export class Parser implements Types.Flow<Types.ParsedStream> {
             case Types.TokenType.STRING:
             case Types.TokenType.NUMBER:
             case Types.TokenType.BOOLEAN:
-                yield { type : Types.ParsedType.PUSH_CONST, token : token };
+                yield { type : Types.ParsedType.LITERAL, token : token };
                 break;
             case Types.TokenType.WORD:
                 switch (token.source) {
                 // definitions
                 case '::':
-                    yield { type : Types.ParsedType.BEGIN_MOD, token : token };
+                    yield { type : Types.ParsedType.MOD_BEGIN, token : token };
                     let mod_name = await flow.next();
                     if (mod_name.done)
                         throw new Error("Unexpected end of source, expected module name");
@@ -29,10 +29,10 @@ export class Parser implements Types.Flow<Types.ParsedStream> {
                     yield { type : Types.ParsedType.IDENTIFIER, token : mod_name.value as Types.Token };
                     break;
                 case ';;':
-                    yield { type : Types.ParsedType.END_MOD, token : token };
+                    yield { type : Types.ParsedType.MOD_END, token : token };
                     break;
                 case ':':
-                    yield { type : Types.ParsedType.BEGIN_WORD, token : token };
+                    yield { type : Types.ParsedType.WORD_BEGIN, token : token };
                     let word_name = await flow.next();
                     if (word_name.done)
                         throw new Error("Unexpected end of source, expect word name");
@@ -40,7 +40,7 @@ export class Parser implements Types.Flow<Types.ParsedStream> {
                     yield { type : Types.ParsedType.IDENTIFIER, token : word_name.value as Types.Token };
                     break;
                 case ';':
-                    yield { type : Types.ParsedType.END_WORD, token : token };
+                    yield { type : Types.ParsedType.WORD_END, token : token };
                     break;
                 // control structures
                 case 'IF':
@@ -56,7 +56,7 @@ export class Parser implements Types.Flow<Types.ParsedStream> {
                     break;
                 // calls
                 default:
-                    yield { type : Types.ParsedType.CALL_WORD, token : token };
+                    yield { type : Types.ParsedType.CALL, token : token };
                 }
                 break;
             case Types.TokenType.COMMENT:

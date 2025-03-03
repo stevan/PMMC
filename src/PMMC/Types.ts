@@ -35,6 +35,7 @@ export namespace Types {
 
     export enum ParsedType {
         IDENTIFIER = 'IDENTIFIER',
+        KEYWORD    = 'KEYWORD',
         PUSH_CONST = 'PUSH_CONST',
         CALL_WORD  = 'CALL_WORD',
         BEGIN_MOD  = 'BEGIN_MOD',

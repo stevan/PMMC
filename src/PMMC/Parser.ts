@@ -19,6 +19,7 @@ export class Parser implements Types.Flow<Types.ParsedStream> {
                 break;
             case Types.TokenType.WORD:
                 switch (token.source) {
+                // definitions
                 case '::':
                     yield { type : Types.ParsedType.BEGIN_MOD, token : token };
                     let mod_name = await flow.next();
@@ -41,6 +42,19 @@ export class Parser implements Types.Flow<Types.ParsedStream> {
                 case ';':
                     yield { type : Types.ParsedType.END_WORD, token : token };
                     break;
+                // control structures
+                case 'IF':
+                case 'ELSE':
+                case 'THEN':
+                case 'BEGIN':
+                case 'WHILE':
+                case 'UNTIL':
+                case 'REPEAT':
+                case 'DO':
+                case 'LOOP':
+                    yield { type : Types.ParsedType.KEYWORD, token : token };
+                    break;
+                // calls
                 default:
                     yield { type : Types.ParsedType.CALL_WORD, token : token };
                 }

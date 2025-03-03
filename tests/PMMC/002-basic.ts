@@ -13,7 +13,12 @@ async function Test001 () {
                     ':: Foo',
                     ': double SWAP * ;',
                     ';;',
-                    '10 double',
+                    `10 double
+                    DUP 15 > IF 15 + THEN
+                    10 DO
+                        DUP +
+                    LOOP
+                    `,
                 ] as Types.Source[]
             )
         )

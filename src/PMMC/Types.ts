@@ -1,9 +1,13 @@
 
 export namespace Types {
 
+    // -------------------------------------------------------------------------
+    // Common Types
+    // -------------------------------------------------------------------------
+
     export interface Runtime {
-        stack   : any[];
-        control : any[];
+        stack   : LiteralValue[];
+        control : LiteralValue[];
     }
 
     export interface Flow<T> {
@@ -16,6 +20,27 @@ export namespace Types {
     }
 
     export type Stream<T> = AsyncGenerator<T, void, void>;
+
+    // =========================================================================
+    // Literals
+    // =========================================================================
+
+    export type NumericLiteral = { type : 'NUM',  value : number  };
+    export type StringLiteral  = { type : 'STR',  value : string  };
+    export type BooleanLiteral = { type : 'BOOL', value : boolean };
+    export type WordLiteral    = { type : 'WORD', value : string  };
+    export type AddressLiteral = { type : 'ADDR', value : string  };
+
+    export type LiteralValue =
+        | NumericLiteral
+        | StringLiteral
+        | BooleanLiteral
+        | WordLiteral
+        | AddressLiteral
+
+    // =========================================================================
+    // Tokens
+    // =========================================================================
 
     // -------------------------------------------------------------------------
     // Source
@@ -43,32 +68,54 @@ export namespace Types {
     // Parsed Tokens
     // -------------------------------------------------------------------------
 
-    export enum ParsedType {
-        IDENTIFIER = 'IDENTIFIER',
-        MOD_BEGIN  = 'MOD_BEGIN',
-        MOD_END    = 'MOD_END',
-        WORD_BEGIN = 'WORD_BEGIN',
-        WORD_END   = 'WORD_END',
-        IMPORT     = 'IMPORT',
-        KEYWORD    = 'KEYWORD',
-        LITERAL    = 'LITERAL',
-        CALL       = 'CALL',
-    }
+    export type Identifier = { type : 'IDENTIFIER', token : Token }
 
-    export type Parsed       = { type : ParsedType, token : Token };
+    export type Import     = { type : 'IMPORT',     token : Token, ident : Identifier  }
+    export type ModBegin   = { type : 'MOD_BEGIN',  token : Token, ident : Identifier }
+    export type ModEnd     = { type : 'MOD_END',    token : Token }
+
+    export type WordBegin  = { type : 'WORD_BEGIN', token : Token, ident : Identifier  }
+    export type WordEnd    = { type : 'WORD_END',   token : Token }
+
+    export type Keyword    = { type : 'KEYWORD',    token : Token }
+    export type Const      = { type : 'CONST',      token : Token, literal : LiteralValue }
+    export type Call       = { type : 'CALL',       token : Token }
+
+    export type Parsed =
+        | Identifier
+        | ModBegin
+        | ModEnd
+        | WordBegin
+        | WordEnd
+        | Import
+        | Keyword
+        | Const
+        | Call
+
     export type ParsedStream = Stream<Parsed>;
 
     // -------------------------------------------------------------------------
     // Compiler Tokens
     // -------------------------------------------------------------------------
 
-    export enum CompiledType {
-        KEYWORD = 'KEYWORD',
-        LITERAL = 'LITERAL',
-        CALL    = 'CALL',
-    }
-
-    export type Compiled       = { type : CompiledType, parsed : Parsed };
+    export type Compiled = {
+        addr   : number,
+        type   : 'TODO',
+        parsed : Parsed
+    };
     export type CompiledStream = Stream<Compiled>;
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

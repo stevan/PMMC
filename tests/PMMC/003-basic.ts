@@ -40,10 +40,11 @@ async function Test003 () {
     for await (const input of stream.flow()) {
         console.log("GOT", input);
     }
-
+/*
     let vol  = stream.getCatalog().shelf.get('Foo') as Dictionary.Volume;
     let word = vol.entries.get('double') as Dictionary.UserWord;
     console.log(word.body);
+*/
 }
 
 Test003();

@@ -7,8 +7,6 @@ export namespace Dictionary {
     type UserWordBody   = Tapes.CompiledTape;
     type NativeWordBody = (runtime : Types.Runtime) => void;
 
-    type WordRef = { name : string };
-
     export type UserWord   = { type : 'USER',   name : string, body : UserWordBody }
     export type NativeWord = { type : 'NATIVE', name : string, body : NativeWordBody }
 
@@ -37,7 +35,7 @@ export namespace Dictionary {
             this.stack.shift();
         }
 
-        lookup (wordRef : WordRef) : Word | undefined {
+        lookup (wordRef : Types.WordLiteral) : Word | undefined {
             // XXX - this could be much better
             for (const dict of this.shelf.values()) {
                 let word = dict.lookup(wordRef);
@@ -70,7 +68,7 @@ export namespace Dictionary {
             return userWord;
         }
 
-        hasCurrentWord () : boolean { return !! this.current }
+        hasCurrentWord  () : boolean { return !! this.current }
         currentWord     () : UserWord { return this.current as UserWord }
         exitCurrentWord () : void {
             //console.log('exiting word', this.current);
@@ -81,8 +79,8 @@ export namespace Dictionary {
             this.entries.set(e.name, e);
         }
 
-        lookup (wordRef : WordRef) : Word | undefined {
-            return this.entries.get(wordRef.name);
+        lookup (wordRef : Types.WordLiteral) : Word | undefined {
+            return this.entries.get(wordRef.value);
         }
     }
 

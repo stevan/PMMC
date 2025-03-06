@@ -1,17 +1,17 @@
 
-import { Types }    from './Types';
-import { Tapes }    from './Tapes';
-import { Literals } from './Literals';
+import { Types } from './Types';
 
 export namespace Dictionary {
 
-    export type UserWordBody   = Tapes.CompiledTape;
+    export type UserWordBody   = Types.Tape<Types.Compiled>;
     export type NativeWordBody = (runtime : Types.Runtime) => void;
 
     export type UserWord   = { type : 'USER',   name : string, body : UserWordBody }
     export type NativeWord = { type : 'NATIVE', name : string, body : NativeWordBody }
 
     export type Word = UserWord | NativeWord;
+
+    export type WordRef = { name : string };
 
     export class Catalog {
         public shelf : Map<string, Volume>;
@@ -25,7 +25,6 @@ export namespace Dictionary {
         addVolume (vol : Volume) : void { this.shelf.set(vol.name, vol) }
 
         createVolume (name : string) : Volume {
-            //console.log('creating volume', name);
             let dict = new Volume(name);
             this.shelf.set(name, dict);
             this.stack.unshift(dict);
@@ -33,13 +32,9 @@ export namespace Dictionary {
         }
 
         currentVolume     () : Volume { return this.stack[0] as Volume }
-        exitCurrentVolume () : void {
-            //console.log('exiting volume', this.stack[0]);
-            this.stack.shift();
-        }
+        exitCurrentVolume () : void { this.stack.shift() }
 
-        lookup (wordRef : Literals.WordRef) : Word | undefined {
-            // XXX - this could be much better
+        lookup (wordRef : WordRef | string) : Word | undefined {
             for (const dict of this.shelf.values()) {
                 let word = dict.lookup(wordRef);
                 if (word)
@@ -59,12 +54,11 @@ export namespace Dictionary {
             this.entries = new Map<string, Word>();
         }
 
-        createUserWord (name : string) : UserWord {
-            //console.log('creating word', name);
+        createUserWord (name : string, body : Types.Tape<Types.Compiled>) : UserWord {
             let userWord = {
                 type : 'USER',
                 name : name,
-                body : new Tapes.CompiledTape()
+                body : body
             } as UserWord;
             this.entries.set(name, userWord);
             this.current = userWord;
@@ -73,17 +67,15 @@ export namespace Dictionary {
 
         hasCurrentWord  () : boolean { return !! this.current }
         currentWord     () : UserWord { return this.current as UserWord }
-        exitCurrentWord () : void {
-            //console.log('exiting word', this.current);
-            this.current = undefined
-        }
+        exitCurrentWord () : void { this.current = undefined }
 
         bind (e : NativeWord) : void {
             this.entries.set(e.name, e);
         }
 
-        lookup (wordRef : Literals.WordRef) : Word | undefined {
-            return this.entries.get(wordRef.name);
+        lookup (wordRef : WordRef | string) : Word | undefined {
+            let name : string = typeof wordRef === 'string' ? wordRef : wordRef.name;
+            return this.entries.get(name);
         }
     }
 

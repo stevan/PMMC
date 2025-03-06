@@ -1,5 +1,6 @@
 
 import { Types }      from './Types';
+import { Tapes }      from './Tapes';
 import { Dictionary } from './Dictionary';
 
 export class Compiler implements Types.Flow<Types.Compiled> {
@@ -18,7 +19,9 @@ export class Compiler implements Types.Flow<Types.Compiled> {
         for await (const parsed of flow) {
             switch (parsed.type) {
             case 'WORD_BEGIN':
-                this.$catalog.currentVolume().createUserWord(parsed.ident.token.source);
+                this.$catalog.currentVolume().createUserWord(
+                    parsed.ident.token.source, new Tapes.CompiledTape()
+                );
                 break;
             case 'WORD_END':
                 this.$catalog.currentVolume().exitCurrentWord();

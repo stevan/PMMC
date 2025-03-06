@@ -27,7 +27,7 @@ export class Interpreter implements Types.Runtime {
             let before = this.stack.toNative();
             switch (compiled.type) {
             case 'EXECUTE':
-                let word = this.catalog.lookup(new Literals.WordRef(compiled.parsed.token.source));
+                let word = this.catalog.lookup(compiled.parsed.token.source);
                 if (!word) throw new Error(`Could not find word ${compiled.parsed.token.source}`)
                 if (word.type == 'NATIVE') {
                     word.body(this);

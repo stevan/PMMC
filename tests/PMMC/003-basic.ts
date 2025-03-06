@@ -18,10 +18,6 @@ async function Test003 () {
             new Tokenizer(
                 new Sources.FromArray(
                     [
-                        `
-                            %:: HTML
-                            %:: std.string
-                        `,
                         ':: Foo',
                         ': double SWAP * ;',
                         ';;',

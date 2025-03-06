@@ -1,5 +1,6 @@
 
-import { Types } from './Types';
+import { Types }    from './Types';
+import { Literals } from './Literals';
 
 export class Parser implements Types.Flow<Types.ParsedStream> {
     private $tokens : Types.Flow<Types.TokenStream>;
@@ -21,22 +22,16 @@ export class Parser implements Types.Flow<Types.ParsedStream> {
         for await (const token of flow) {
             switch (token.type) {
             case Types.TokenType.STRING:
-                yield { type : 'CONST', token : token, literal : { type : 'STR', value : token.source } };
+                yield { type : 'CONST', token : token, literal : new Literals.Str(token.source) };
                 break;
             case Types.TokenType.NUMBER:
-                yield { type : 'CONST', token : token, literal : { type : 'NUM', value : parseInt(token.source) } };
+                yield { type : 'CONST', token : token, literal : new Literals.Num(parseInt(token.source)) };
                 break;
             case Types.TokenType.BOOLEAN:
-                yield { type : 'CONST', token : token, literal : { type : 'BOOL', value : (token.source == '#t' ? true : false) } };
+                yield { type : 'CONST', token : token, literal : new Literals.Bool(token.source == '#t' ? true : false) };
                 break;
             case Types.TokenType.WORD:
                 switch (token.source) {
-                // -------------------------------------------------------------
-                // imports
-                // -------------------------------------------------------------
-                case '%::':
-                    yield { type : 'IMPORT', token : token, ident : await this.getIdentifier(flow) };
-                    break;
                 // -------------------------------------------------------------
                 // definitions
                 // -------------------------------------------------------------

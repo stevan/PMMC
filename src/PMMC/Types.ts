@@ -1,4 +1,6 @@
 
+import { Literals } from './Literals';
+
 export namespace Types {
 
     // -------------------------------------------------------------------------
@@ -6,8 +8,8 @@ export namespace Types {
     // -------------------------------------------------------------------------
 
     export interface Runtime {
-        stack   : LiteralValue[];
-        control : LiteralValue[];
+        stack   : Literals.Stack;
+        control : Literals.Stack;
     }
 
     export interface Flow<T> {
@@ -20,23 +22,6 @@ export namespace Types {
     }
 
     export type Stream<T> = AsyncGenerator<T, void, void>;
-
-    // =========================================================================
-    // Literals
-    // =========================================================================
-
-    export type NumericLiteral = { type : 'NUM',  value : number  };
-    export type StringLiteral  = { type : 'STR',  value : string  };
-    export type BooleanLiteral = { type : 'BOOL', value : boolean };
-    export type WordLiteral    = { type : 'WORD', value : string  };
-    export type AddressLiteral = { type : 'ADDR', value : string  };
-
-    export type LiteralValue =
-        | NumericLiteral
-        | StringLiteral
-        | BooleanLiteral
-        | WordLiteral
-        | AddressLiteral
 
     // =========================================================================
     // Tokens
@@ -70,7 +55,6 @@ export namespace Types {
 
     export type Identifier = { type : 'IDENTIFIER', token : Token }
 
-    export type Import     = { type : 'IMPORT',     token : Token, ident : Identifier  }
     export type ModBegin   = { type : 'MOD_BEGIN',  token : Token, ident : Identifier }
     export type ModEnd     = { type : 'MOD_END',    token : Token }
 
@@ -78,7 +62,7 @@ export namespace Types {
     export type WordEnd    = { type : 'WORD_END',   token : Token }
 
     export type Keyword    = { type : 'KEYWORD',    token : Token }
-    export type Const      = { type : 'CONST',      token : Token, literal : LiteralValue }
+    export type Const      = { type : 'CONST',      token : Token, literal : Literals.Literal }
     export type Call       = { type : 'CALL',       token : Token }
 
     export type Parsed =
@@ -87,7 +71,6 @@ export namespace Types {
         | ModEnd
         | WordBegin
         | WordEnd
-        | Import
         | Keyword
         | Const
         | Call
@@ -98,11 +81,15 @@ export namespace Types {
     // Compiler Tokens
     // -------------------------------------------------------------------------
 
-    export type Compiled = {
-        addr   : number,
-        type   : 'TODO',
-        parsed : Parsed
-    };
+    export type Push    = { addr : number, type : 'PUSH',    parsed : Const };
+    export type Execute = { addr : number, type : 'EXECUTE', parsed : Call  };
+    export type TODO    = { addr : number, type : 'TODO',    parsed : Parsed };
+
+    export type Compiled =
+        | Push
+        | Execute
+        | TODO
+
     export type CompiledStream = Stream<Compiled>;
 
 }

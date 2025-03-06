@@ -1,11 +1,12 @@
 
-import { Types } from './Types';
-import { Tapes } from './Tapes';
+import { Types }    from './Types';
+import { Tapes }    from './Tapes';
+import { Literals } from './Literals';
 
 export namespace Dictionary {
 
-    type UserWordBody   = Tapes.CompiledTape;
-    type NativeWordBody = (runtime : Types.Runtime) => void;
+    export type UserWordBody   = Tapes.CompiledTape;
+    export type NativeWordBody = (runtime : Types.Runtime) => void;
 
     export type UserWord   = { type : 'USER',   name : string, body : UserWordBody }
     export type NativeWord = { type : 'NATIVE', name : string, body : NativeWordBody }
@@ -21,6 +22,8 @@ export namespace Dictionary {
             this.stack = new Array<Volume>();
         }
 
+        addVolume (vol : Volume) : void { this.shelf.set(vol.name, vol) }
+
         createVolume (name : string) : Volume {
             //console.log('creating volume', name);
             let dict = new Volume(name);
@@ -35,7 +38,7 @@ export namespace Dictionary {
             this.stack.shift();
         }
 
-        lookup (wordRef : Types.WordLiteral) : Word | undefined {
+        lookup (wordRef : Literals.WordRef) : Word | undefined {
             // XXX - this could be much better
             for (const dict of this.shelf.values()) {
                 let word = dict.lookup(wordRef);
@@ -79,8 +82,8 @@ export namespace Dictionary {
             this.entries.set(e.name, e);
         }
 
-        lookup (wordRef : Types.WordLiteral) : Word | undefined {
-            return this.entries.get(wordRef.value);
+        lookup (wordRef : Literals.WordRef) : Word | undefined {
+            return this.entries.get(wordRef.name);
         }
     }
 

@@ -7,8 +7,8 @@ export namespace Tapes {
         public index    : number     = 0;
         public compiled : Types.Compiled[] = [];
 
-        load (t : Types.Compiled) : void {
-            this.compiled.push(t);
+        load (...t : Types.Compiled[]) : void {
+            this.compiled.push(...t);
         }
 
         async *flow () : Types.CompiledStream {

@@ -15,8 +15,6 @@ function Test001 () {
     let word : Dictionary.UserWord = vol.currentWord();
     console.log(word.name);
 
-    word.body.push(1, "hello");
-
     console.log(word);
 
 }

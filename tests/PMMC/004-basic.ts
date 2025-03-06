@@ -1,39 +1,26 @@
 
-import { Types }   from '../../src/PMMC/Types';
-
-import { Sources }     from '../../src/PMMC/Sources';
-import { Dictionary }  from '../../src/PMMC/Dictionary';
-import { Tokenizer }   from '../../src/PMMC/Tokenizer';
-import { Parser }      from '../../src/PMMC/Parser';
-import { Compiler }    from '../../src/PMMC/Compiler';
-import { Interpreter } from '../../src/PMMC/Interpreter';
+import { Images }  from '../../src/PMMC/Images';
+import { Sources } from '../../src/PMMC/Sources';
+import { Sinks }   from '../../src/PMMC/Sinks';
 
 async function Test003 () {
-    let dict        = new Dictionary.Catalog();
-    let interpreter = new Interpreter(
-        dict,
-        new Compiler(
-            dict,
-            new Parser(
-                new Tokenizer(
-                    new Sources.FromArray(
-                        [
-                            `
-                            : plusTen     10 + ;
-                            : timesTwenty 20 * ;
-                            1 plusTen timesTwenty 3 -
-                            `,
-                        ] as Types.Source[]
-                    )
-                )
-            )
-        )
-    );
+    //let src = new Sources.REPL();
+    //let src = new Sources.FromArray(
+    //    [
+    //        `
+    //        : plusTen     10 + ;
+    //        : timesTwenty 20 * ;
+    //        1 plusTen timesTwenty 3 -
+    //        `,
+    //    ]
+    //);
 
-    for await (const output of interpreter.run()) {
-        console.log(...output);
-    }
-
+    (new Sinks.Console(
+        (new Images.BaseImage()).compile().run(
+            new Sources.REPL()
+        ))
+    ).run()
+        .then((i) => console.log(i));
 }
 
 Test003();

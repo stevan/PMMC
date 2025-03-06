@@ -52,20 +52,31 @@ export namespace Literals {
         toNative () : any { return this.value }
     }
 
+    export function isLiteral (candidate: any) : boolean {
+        return candidate instanceof Bool
+            || candidate instanceof Num
+            || candidate instanceof Str
+            || candidate instanceof WordRef
+            || candidate instanceof Boxed
+            || candidate instanceof Stack;
+    }
+
     // -------------------------------------------------------------------------
     // Containers
     // -------------------------------------------------------------------------
 
     export class Stack implements Literal {
-        private $items : Literal[] = [];
+        private $items : Literal[];
 
-        constructor() {}
+        constructor(items : Literal[] = []) { this.$items = items }
         toNum    () : number  { throw new Error("TODO") }
         toBool   () : boolean { throw new Error("TODO") }
         toStr    () : string  { throw new Error("TODO") }
 
         toNative () : any { return this.$items.map((l) => l.toNative()) }
         toArray  () : Literal[] { return this.$items }
+
+        copyStack () : Stack { return new Stack([...this.$items]) }
 
         get size () : number { return this.$items.length }
 

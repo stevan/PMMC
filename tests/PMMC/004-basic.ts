@@ -19,7 +19,9 @@ async function Test003 () {
                     new Sources.FromArray(
                         [
                             `
-                            1 10 + 20 * 3 -
+                            : plusTen     10 + ;
+                            : timesTwenty 20 * ;
+                            1 plusTen timesTwenty 3 -
                             `,
                         ] as Types.Source[]
                     )
@@ -28,7 +30,9 @@ async function Test003 () {
         )
     );
 
-    await interpreter.run();
+    for await (const output of interpreter.run()) {
+        console.log(...output);
+    }
 
 }
 

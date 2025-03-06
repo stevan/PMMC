@@ -9,16 +9,16 @@ const IS_COMMENT  = /^\/\/\s.*\n$/;
 
 const SPLITTER = /\/\/\s.*\n|"([^"])*"|'([^'])*'|\S+/g;
 
-export class Tokenizer implements Types.Flow<Types.TokenStream> {
-    private $source          : Types.Flow<Types.SourceStream>;
+export class Tokenizer implements Types.Flow<Types.Token> {
+    private $source          : Types.Flow<Types.Source>;
     private $includeComments : boolean;
 
-    constructor (source : Types.Flow<Types.SourceStream>) {
+    constructor (source : Types.Flow<Types.Source>) {
         this.$source          = source;
         this.$includeComments = false;
     }
 
-    async *flow () : Types.TokenStream {
+    async *flow () : Types.Stream<Types.Token> {
         for await (const chunk of this.$source.flow()) {
             let match;
             while ((match = SPLITTER.exec(chunk)) !== null) {

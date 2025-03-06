@@ -12,8 +12,12 @@ export namespace Types {
         control : Literals.Stack;
     }
 
+    // -------------------------------------------------------------------------
+    // Core Types
+    // -------------------------------------------------------------------------
+
     export interface Flow<T> {
-        flow () : T;
+        flow () : Stream<T>;
     }
 
     export interface Tape<T> {
@@ -31,8 +35,7 @@ export namespace Types {
     // Source
     // -------------------------------------------------------------------------
 
-    export type Source       = string;
-    export type SourceStream = Stream<Source>;
+    export type Source = string;
 
     // -------------------------------------------------------------------------
     // Tokens (rename to Lexed)
@@ -46,8 +49,7 @@ export namespace Types {
         COMMENT = 'COMMENT',
     }
 
-    export type Token       = { type : TokenType, source : string };
-    export type TokenStream = Stream<Token>;
+    export type Token = { type : TokenType, source : string };
 
     // -------------------------------------------------------------------------
     // Parsed Tokens
@@ -75,8 +77,6 @@ export namespace Types {
         | Const
         | Call
 
-    export type ParsedStream = Stream<Parsed>;
-
     // -------------------------------------------------------------------------
     // Compiler Tokens
     // -------------------------------------------------------------------------
@@ -90,8 +90,8 @@ export namespace Types {
         | Execute
         | TODO
 
-    export type CompiledStream = Stream<Compiled>;
 
+    // -------------------------------------------------------------------------
 }
 
 

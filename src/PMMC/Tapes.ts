@@ -7,11 +7,11 @@ export namespace Tapes {
         public index    : number     = 0;
         public compiled : Types.Compiled[] = [];
 
-        load (...t : Types.Compiled[]) : void {
-            this.compiled.push(...t);
+        load (t : Types.Compiled) : void {
+            this.compiled.push(t);
         }
 
-        async *flow () : Types.CompiledStream {
+        async *flow () : Types.Stream<Types.Compiled> {
             while (this.index < this.compiled.length) {
                 let ct = this.compiled[ this.index++ ] as Types.Compiled;
                 yield ct;

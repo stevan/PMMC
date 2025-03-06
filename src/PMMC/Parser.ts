@@ -2,14 +2,14 @@
 import { Types }    from './Types';
 import { Literals } from './Literals';
 
-export class Parser implements Types.Flow<Types.ParsedStream> {
-    private $tokens : Types.Flow<Types.TokenStream>;
+export class Parser implements Types.Flow<Types.Parsed> {
+    private $tokens : Types.Flow<Types.Token>;
 
-    constructor (tokens : Types.Flow<Types.TokenStream>) {
+    constructor (tokens : Types.Flow<Types.Token>) {
         this.$tokens = tokens;
     }
 
-    async getIdentifier (stream : Types.TokenStream) : Promise<Types.Identifier> {
+    async getIdentifier (stream : Types.Stream<Types.Token>) : Promise<Types.Identifier> {
         return stream.next().then((ident) => {
             if (ident.done)
                 throw new Error("Unexpected end of source, expect identifier");
@@ -17,7 +17,7 @@ export class Parser implements Types.Flow<Types.ParsedStream> {
         })
     }
 
-    async *flow () : Types.ParsedStream {
+    async *flow () : Types.Stream<Types.Parsed> {
         let flow = this.$tokens.flow();
         for await (const token of flow) {
             switch (token.type) {

@@ -1,10 +1,6 @@
 
 export namespace Literals {
 
-    // -------------------------------------------------------------------------
-    // Scalars
-    // -------------------------------------------------------------------------
-
     export interface Literal {
         toNum    () : number;
         toBool   () : boolean;
@@ -12,20 +8,16 @@ export namespace Literals {
         toNative () : any;
     }
 
+    // -------------------------------------------------------------------------
+    // Scalars
+    // -------------------------------------------------------------------------
+
     export class Bool implements Literal {
         constructor(public value : boolean) {}
         toNum    () : number  { return this.value ? 1 : 0 }
         toBool   () : boolean { return this.value }
         toStr    () : string  { return this.value.toString() }
         toNative () : any { return this.value }
-
-        // TODO:
-        // invert
-        // equals
-    }
-
-    export function assertBool (l : Literal) : asserts l is Bool {
-        if (!(l instanceof Bool)) throw new Error(`Not Bool (${JSON.stringify(l)})`)
     }
 
     export class Num implements Literal {
@@ -34,16 +26,6 @@ export namespace Literals {
         toBool   () : boolean { return this.value != 0 ? true : false }
         toStr    () : string  { return this.value.toString() }
         toNative () : any { return this.value }
-
-        // TODO:
-        // negate
-        // add, sub, mul, div, mod
-        // equals
-        // compare
-    }
-
-    export function assertNum (l : Literal) : asserts l is Num {
-        if (!(l instanceof Num)) throw new Error(`Not Num (${JSON.stringify(l)})`)
     }
 
     export class Str implements Literal {
@@ -52,16 +34,6 @@ export namespace Literals {
         toBool   () : boolean { return this.value != '' ? true : false }
         toStr    () : string  { return this.value }
         toNative () : any { return this.value }
-
-        // TODO:
-        // length
-        // concat
-        // equals
-        // compare
-    }
-
-    export function assertStr (l : Literal) : asserts l is Str {
-        if (!(l instanceof Str)) throw new Error(`Not Str (${JSON.stringify(l)})`)
     }
 
     export class WordRef implements Literal {
@@ -70,25 +42,14 @@ export namespace Literals {
         toBool   () : boolean { return true }
         toStr    () : string  { return "&" + this.name }
         toNative () : any { return this.toStr() }
-        // TODO:
-        // length?
-        // equals
     }
 
-    export function assertWordRef (l : Literal) : asserts l is WordRef {
-        if (!(l instanceof WordRef)) throw new Error(`Not WordRef (${JSON.stringify(l)})`)
-    }
-
-    export class JSValue implements Literal {
+    export class Boxed implements Literal {
         constructor(public value : any) {}
         toNum    () : number  { return Number(this.value) }
         toBool   () : boolean { return !!(this.value) }
         toStr    () : string  { return this.value.toString() }
         toNative () : any { return this.value }
-    }
-
-    export function assertJSValue (l : Literal) : asserts l is JSValue {
-        if (!(l instanceof JSValue)) throw new Error(`Not JSValue (${JSON.stringify(l)})`)
     }
 
     // -------------------------------------------------------------------------
@@ -138,60 +99,33 @@ export namespace Literals {
             this.$items.push(z);
             this.$items.push(y);
         }
+    }
 
+    // -------------------------------------------------------------------------
+    // Assertions
+    // -------------------------------------------------------------------------
 
-        // TODO:
-        // length
-        // equals
+    export function assertBool (l : Literal) : asserts l is Bool {
+        if (!(l instanceof Bool)) throw new Error(`Not Bool (${JSON.stringify(l)})`)
+    }
+
+    export function assertNum (l : Literal) : asserts l is Num {
+        if (!(l instanceof Num)) throw new Error(`Not Num (${JSON.stringify(l)})`)
+    }
+
+    export function assertStr (l : Literal) : asserts l is Str {
+        if (!(l instanceof Str)) throw new Error(`Not Str (${JSON.stringify(l)})`)
+    }
+
+    export function assertWordRef (l : Literal) : asserts l is WordRef {
+        if (!(l instanceof WordRef)) throw new Error(`Not WordRef (${JSON.stringify(l)})`)
+    }
+
+    export function assertBoxed (l : Literal) : asserts l is Boxed {
+        if (!(l instanceof Boxed)) throw new Error(`Not Boxed (${JSON.stringify(l)})`)
     }
 
     export function assertStack (l : Literal) : asserts l is Stack {
         if (!(l instanceof Stack)) throw new Error(`Not Stack (${JSON.stringify(l)})`)
     }
-
-    export class Tuple implements Literal {
-        private $items : Literal[] = [];
-
-        constructor(public size : number) {}
-        toNum    () : number  { throw new Error("TODO") }
-        toBool   () : boolean { throw new Error("TODO") }
-        toStr    () : string  { throw new Error("TODO") }
-        toNative () : any { return this.$items.map((l) => l.toNative()) }
-
-        get (i : number) : Literal { return this.$items[i] as Literal }
-        set (i : number, l : Literal) : void { this.$items[i] = l }
-
-        // TODO:
-        // length
-        // equals
-    }
-
-    export function assertTuple (l : Literal) : asserts l is Tuple {
-        if (!(l instanceof Tuple)) throw new Error(`Not Tuple (${JSON.stringify(l)})`)
-    }
-
-    export class Queue implements Literal {
-        private $items : Literal[] = [];
-
-        constructor() {}
-        toNum    () : number  { throw new Error("TODO") }
-        toBool   () : boolean { throw new Error("TODO") }
-        toStr    () : string  { throw new Error("TODO") }
-        toNative () : any { return this.$items.map((l) => l.toNative()) }
-
-        get size () : number { return this.$items.length }
-
-        enqueue (l : Literal) : void { this.$items.unshift(l) }
-        dequeue () : Literal { return this.$items.pop() as Literal }
-        discard () : void  { this.$items.pop(); }
-
-        // TODO:
-        // length
-        // equals
-    }
-
-    export function assertQueue (l : Literal) : asserts l is Queue {
-        if (!(l instanceof Queue)) throw new Error(`Not Queue (${JSON.stringify(l)})`)
-    }
-
 }

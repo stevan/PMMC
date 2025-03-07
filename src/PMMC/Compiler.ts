@@ -1,7 +1,6 @@
 
 import { Types }      from './Types';
 import { Tapes }      from './Tapes';
-//import { Literals }   from './Literals';
 import { Dictionary } from './Dictionary';
 
 export class Compiler implements Types.Flow<Types.Parsed, Types.Compiled> {
@@ -25,44 +24,40 @@ export class Compiler implements Types.Flow<Types.Parsed, Types.Compiled> {
                 this.$catalog.currentVolume().exitCurrentWord();
                 tape_stack.shift();
                 break;
-            //case 'BLOCK_BEGIN':
-            //    tape_stack.unshift(new Tapes.CompiledTape());
-            //    break;
-            //case 'BLOCK_END':
-            //    let blockTape = tape_stack.shift();
-            //    if (!blockTape)
-            //        throw new Error("Expected block tape on the stack and got nothing!");
-            //    let block = {
-            //        type   : 'PUSH',
-            //        parsed : {
-            //            type    : 'CONST',
-            //            token   : { type : 'WORD', source : '[BLOCK]' },
-            //            literal : new Literals.Block(blockTape),
-            //        }
-            //    } as Types.Compiled;
-            //    if (tape_stack.length > 0) {
-            //        let tape = tape_stack[0] as Tapes.CompiledTape;
-            //        tape.load(block);
-            //    } else {
-            //        yield block;
-            //    }
-            //    break;
+            case 'BLOCK_BEGIN':
+                tape_stack.unshift(new Tapes.CompiledTape());
+                break;
+            case 'BLOCK_COND':
+            case 'BLOCK_LOOP':
+                let blockTape = tape_stack.shift();
+                if (!blockTape)
+                    throw new Error("Expected block tape on the stack and got nothing!");
+
+                let block = {
+                    type   : (parsed.type == 'BLOCK_COND' ? 'COND' : 'LOOP'),
+                    tape   : blockTape,
+                    parsed : parsed,
+                } as Types.Compiled;
+
+                if (tape_stack.length > 0) {
+                    let tape = tape_stack[0] as Tapes.CompiledTape;
+                    tape.load(block);
+                } else {
+                    yield block;
+                }
+                break;
             case 'CALL':
-                let exec = { type : 'EXECUTE', parsed : parsed } as Types.Compiled;
+            case 'CONST':
+                let exec = {
+                    type   : (parsed.type == 'CALL' ? 'EXECUTE' : 'PUSH'),
+                    parsed : parsed,
+                } as Types.Compiled;
+
                 if (tape_stack.length > 0) {
                     let tape = tape_stack[0] as Tapes.CompiledTape;
                     tape.load(exec);
                 } else {
                     yield exec;
-                }
-                break;
-            case 'CONST':
-                let constant = { type : 'PUSH', parsed : parsed } as Types.Compiled;
-                if (tape_stack.length > 0) {
-                    let tape = tape_stack[0] as Tapes.CompiledTape;
-                    tape.load(constant);
-                } else {
-                    yield constant;
                 }
                 break;
             default:

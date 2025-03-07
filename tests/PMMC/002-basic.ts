@@ -8,10 +8,9 @@ async function Test002 () {
             ': double SWAP * ;',
             ';;',
             `10 double
-            DUP 15 > IF 15 + THEN
-            10 DO
-                DUP +
-            LOOP
+            DUP 15 > [ 15 + ]?
+
+            10 [ 1 - 0 > ]@
             `,
         ]
     );

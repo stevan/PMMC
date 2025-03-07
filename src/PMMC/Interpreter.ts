@@ -22,6 +22,7 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
             case 'EXECUTE':
                 let word = this.catalog.lookup(compiled.parsed.token.source);
                 if (!word) throw new Error(`Could not find word ${compiled.parsed.token.source}`)
+                yield this.createOutputToken(Types.OutputHandle.STDERR, [ `  CALL : ${word.name}` ]);
                 if (word.type == 'NATIVE') {
                     word.body(this);
                 }
@@ -29,16 +30,27 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
                     yield* this.flow(word.body.flow(), word.name);
                 }
                 break;
+            case 'COND':
+                let tape = compiled.tape;
+                let cond = this.stack.pop() as Literals.Bool;
+                Literals.assertBool(cond);
+                yield this.createOutputToken(Types.OutputHandle.STDERR, [ `  COND ?` ]);
+                if (cond.toBool()) {
+                    yield* this.flow(tape.flow(), 'COND');
+                }
+                this.stack.push(cond);
+                break;
             case 'PUSH':
+                yield this.createOutputToken(Types.OutputHandle.STDERR, [ `  PUSH + ${compiled.parsed.token.source}` ]);
                 this.stack.push(compiled.parsed.literal)
                 break;
             case 'TODO':
                 yield this.createOutputToken(Types.OutputHandle.STDERR, [ "TODO", compiled ]);
                 break;
             }
-            yield this.createOutputToken(Types.OutputHandle.STDERR, [ "  TICK :>", before, "--", this.stack ]);
+            yield this.createOutputToken(Types.OutputHandle.STDERR, [ "    [] :", before, "--", this.stack ]);
         }
-        yield this.createOutputToken(Types.OutputHandle.STDERR, [ "EXIT  <:", this.stack ]);
+        yield this.createOutputToken(Types.OutputHandle.STDERR, [ "EXIT   ^", this.stack ]);
     }
 
     private createOutputToken (fh : Types.OutputHandle, args : any[]) : Types.OutputToken {

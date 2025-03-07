@@ -100,8 +100,9 @@ export namespace Types {
     export type WordBegin  = { type : 'WORD_BEGIN', token : Token, ident : Identifier  }
     export type WordEnd    = { type : 'WORD_END',   token : Token }
 
-    //export type BlockBegin = { type : 'BLOCK_BEGIN', token : Token }
-    //export type BlockEnd   = { type : 'BLOCK_END',   token : Token }
+    export type BlockBegin = { type : 'BLOCK_BEGIN', token : Token }
+    export type BlockCond  = { type : 'BLOCK_COND',  token : Token }
+    export type BlockLoop  = { type : 'BLOCK_LOOP',  token : Token }
 
     export type Keyword    = { type : 'KEYWORD',    token : Token }
     export type Const      = { type : 'CONST',      token : Token, literal : Literal }
@@ -113,8 +114,9 @@ export namespace Types {
         | ModEnd
         | WordBegin
         | WordEnd
-        //| BlockBegin
-        //| BlockEnd
+        | BlockBegin
+        | BlockCond
+        | BlockLoop
         | Keyword
         | Const
         | Call
@@ -123,11 +125,15 @@ export namespace Types {
     // Compiler Tokens
     // -------------------------------------------------------------------------
 
-    export type Push    = { type : 'PUSH',    parsed : Const };
+    export type Loop    = { type : 'LOOP',    parsed : BlockLoop, tape : Tape<Compiled> };
+    export type Cond    = { type : 'COND',    parsed : BlockCond, tape : Tape<Compiled> };
+    export type Push    = { type : 'PUSH',    parsed : Const }; // << move the `literal` here instead
     export type Execute = { type : 'EXECUTE', parsed : Call  };
     export type TODO    = { type : 'TODO',    parsed : Parsed };
 
     export type Compiled =
+        | Loop
+        | Cond
         | Push
         | Execute
         | TODO

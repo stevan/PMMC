@@ -28,7 +28,7 @@ export class Tokenizer implements Types.Flow<Types.SourceCode, Types.Token> {
                     }
                     break;
                 case IS_STRING.test(m):
-                    yield { type : Types.TokenType.STRING, source : m };
+                    yield { type : Types.TokenType.STRING, source : m.slice(1,-1) };
                     break;
                 case IS_NUMBER.test(m):
                     yield { type : Types.TokenType.NUMBER, source : m };

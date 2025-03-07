@@ -31,13 +31,13 @@ export namespace Literals {
         toNative () : any { return this.value }
     }
 
-    //export class Block implements Types.Literal {
-    //    constructor(public tape : Types.Tape<Types.Compiled>) {}
-    //    toNum    () : number  { return Number(this.tape) }
-    //    toBool   () : boolean { return !!(this.tape) }
-    //    toStr    () : string  { return String(this.tape) }
-    //    toNative () : any { return this.tape }
-    //}
+    export class Block implements Types.Literal {
+        constructor(public tape : Types.Tape<Types.Compiled>) {}
+        toNum    () : number  { return Number(this.tape) }
+        toBool   () : boolean { return !!(this.tape) }
+        toStr    () : string  { return String(this.tape) }
+        toNative () : any { return this.tape }
+    }
 
     export class Boxed implements Types.Literal {
         constructor(public value : any) {}
@@ -127,9 +127,9 @@ export namespace Literals {
         if (!(l instanceof Str)) throw new Error(`Not Str (${JSON.stringify(l)})`)
     }
 
-    //export function assertBlock (l : Types.Literal) : asserts l is Block {
-    //    if (!(l instanceof Block)) throw new Error(`Not Block (${JSON.stringify(l)})`)
-    //}
+    export function assertBlock (l : Types.Literal) : asserts l is Block {
+        if (!(l instanceof Block)) throw new Error(`Not Block (${JSON.stringify(l)})`)
+    }
 
     export function assertBoxed (l : Types.Literal) : asserts l is Boxed {
         if (!(l instanceof Boxed)) throw new Error(`Not Boxed (${JSON.stringify(l)})`)

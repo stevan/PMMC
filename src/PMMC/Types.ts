@@ -16,20 +16,25 @@ export namespace Types {
     // Core Types
     // -------------------------------------------------------------------------
 
-    export interface Source<T> {
-        flow () : Stream<T>;
+    export type Stream<T> = AsyncGenerator<T, void, void>;
+
+    export interface Source<Out> {
+        flow () : Stream<Out>;
     }
 
     export interface Flow<In, Out> {
         flow (source: Stream<In>) : Stream<Out>;
     }
 
-    export interface Tape<T> {
-        load (t : T) : void;
-        flow ()      : Stream<T>;
+    export interface Sink<In> {
+        flow (source: Stream<In>) : Promise<void>;
     }
 
-    export type Stream<T> = AsyncGenerator<T, void, void>;
+    // ... tapes are like sources, but with a bit more
+
+    export type Tape<T> = Source<T> & {
+        load (t : T) : void;
+    }
 
     // =========================================================================
     // Tokens

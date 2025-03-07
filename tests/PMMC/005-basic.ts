@@ -1,7 +1,7 @@
 
 import * as PMMC from '../../src/PMMC';
 
-async function Test004 () {
+async function Test005 () {
     let dict   = new PMMC.Dictionary.Catalog();
     dict.addVolume(PMMC.Images.createCoreVolume());
 
@@ -15,11 +15,15 @@ async function Test004 () {
     let parser      = new PMMC.Parser();
     let compiler    = new PMMC.Compiler(dict);
     let interpreter = new PMMC.Interpreter(dict);
+    let output      = new PMMC.Sinks.Console();
 
-    for await (const input of interpreter.flow(compiler.flow(parser.flow(tokenizer.flow(source.flow()))))) {
-        console.log("GOT", input);
-    }
+    await output.flow(
+            interpreter.flow(
+                compiler.flow(
+                    parser.flow(
+                        tokenizer.flow(
+                            source.flow())))));
 }
 
-Test004();
+Test005();
 

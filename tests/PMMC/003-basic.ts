@@ -1,13 +1,9 @@
 
-import { Sources }    from '../../src/PMMC/Sources';
-import { Dictionary } from '../../src/PMMC/Dictionary';
-import { Tokenizer }  from '../../src/PMMC/Tokenizer';
-import { Parser }     from '../../src/PMMC/Parser';
-import { Compiler }   from '../../src/PMMC/Compiler';
+import * as PMMC from '../../src/PMMC';
 
 async function Test003 () {
-    let dict   = new Dictionary.Catalog();
-    let source = new Sources.FromArray(
+    let dict   = new PMMC.Dictionary.Catalog();
+    let source = new PMMC.Sources.FromArray(
         [
             ':: Foo',
             ': double SWAP * ;',
@@ -21,9 +17,9 @@ async function Test003 () {
         ]
     );
 
-    let tokenizer = new Tokenizer();
-    let parser    = new Parser();
-    let compiler  = new Compiler(dict);
+    let tokenizer = new PMMC.Tokenizer();
+    let parser    = new PMMC.Parser();
+    let compiler  = new PMMC.Compiler(dict);
 
     for await (const input of compiler.flow(parser.flow(tokenizer.flow(source.flow())))) {
         console.log("GOT", input);

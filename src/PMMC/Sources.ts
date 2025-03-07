@@ -5,6 +5,18 @@ import { Types } from './Types';
 
 export namespace Sources {
 
+    export class FromString implements Types.Source<Types.SourceCode> {
+        private $source : Types.SourceCode;
+
+        constructor (src : Types.SourceCode) {
+            this.$source = src;
+        }
+
+        async *flow () : Types.Stream<Types.SourceCode> {
+            yield this.$source;
+        }
+    }
+
     export class FromArray implements Types.Source<Types.SourceCode> {
         private $array : Types.SourceCode[]
 

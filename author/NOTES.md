@@ -3,9 +3,9 @@
 
 ```
 [             // start block and collect up until end token
-
-]?            // if TOS if true, run this block
-]@            // always run once, then if TOS if true, re-run this block
+  <block>
+]?            // pop TOS, if true, run this block, put old TOS back on TOS
+]@?           // always run once, then if TOS if true, re-run this block
 
 ```
 
@@ -53,7 +53,7 @@ UNTIL
     DUP         (       n-1 -- n-1 n-1 )
     0 ==        ( n-1 n-1 0 -- n-1 #f  )
     !           (    n-1 #f -- n-1 #t  ) << invert the condition
-]@              (    n-1 #t -- n-1     ) CONDITIONAL LOOP
+]@?             (    n-1 #t -- n-1     ) CONDITIONAL LOOP
 
 
 BEGIN
@@ -67,7 +67,7 @@ REPEAT
     0 !=        (     n n 0 -- n #t      )
     [ 1 -       (      n #t -- n #t [..] )
     ]?          ( n #t [..] -- n-1 #t    ) INVOKE!
-]@              (    n-1 #t -- n-1       ) CONDITIONAL LOOP
+]@?             (    n-1 #t -- n-1       ) CONDITIONAL LOOP
 
 ```
 
@@ -81,16 +81,22 @@ LOOP
 
 SWAP            (        n 10 0 -- n 0 10        ) (      )
 [               (        n 0 10 -- n 0 10 [..    ) (      )
-    >R          (        n 0 10 -- n 0           ) ( 10   )
-    1 +         (           n 0 -- n 1           ) ( 10   )
-    >R          (           n 1 -- n             ) ( 10 1 )
-    1 +         (             n -- n+1           ) ( 10 1 ) << loop body
-    <R          (           n+1 -- n+1 1         ) ( 10   )
-    <R          (           n+1 -- n+1 1 10      ) (      )
-    OVER OVER   (      n+1 1 10 -- n+1 1 10 1 10 ) (      )
-    >           ( n+1 1 10 1 10 -- n+1 1 10 #t   ) (      )
-]@              (   n+1 1 10 #t -- n+1 1 10      ) (      )
+    >R          (        n 0 10 -- n 0           ) (   10 ) // turn into one built-in
+    1 +         (           n 0 -- n 1           ) (   10 ) // turn into one built-in
+    >R          (           n 1 -- n             ) ( 1 10 ) // turn into one built-in
+    1 +         (             n -- n+1           ) ( 1 10 ) << loop body
+    <R          (           n+1 -- n+1 1         ) (   10 ) // turn into one built-in
+    <R          (           n+1 -- n+1 1 10      ) (      ) // turn into one built-in
+    OVER OVER   (      n+1 1 10 -- n+1 1 10 1 10 ) (      ) // turn into one built-in
+    >           ( n+1 1 10 1 10 -- n+1 1 10 #t   ) (      ) // turn into one built-in
+]@?             (   n+1 1 10 #t -- n+1 1 10      ) (      )
 
+// alternately ...
+
+SWAP            (        n 10 0 -- n 0 10   ) (      )
+[               (        n 0 10 -- n [..    ) ( 1 10 )
+    1 +         (             n -- n+1      ) ( 1 10 ) << loop body
+]@+             (   n+1 1 10 #t -- n+1 1 10 ) (      )
 
 ```
 

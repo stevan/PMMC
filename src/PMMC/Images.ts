@@ -127,8 +127,8 @@ export namespace Images {
         // ---------------------------------------------------------------------
 
         bindNativeWord('~', (r:Types.Runtime) => {
-            let rhs = r.stack.pop() as Literals.Literal;
-            let lhs = r.stack.pop() as Literals.Literal;
+            let rhs = r.stack.pop() as Types.Literal;
+            let lhs = r.stack.pop() as Types.Literal;
             r.stack.push(new Literals.Str(lhs.toNative() + rhs.toNative()))
         });
 
@@ -137,14 +137,14 @@ export namespace Images {
         // ---------------------------------------------------------------------
 
         bindNativeWord('==', (r:Types.Runtime) => {
-            let rhs = r.stack.pop() as Literals.Literal;
-            let lhs = r.stack.pop() as Literals.Literal;
+            let rhs = r.stack.pop() as Types.Literal;
+            let lhs = r.stack.pop() as Types.Literal;
             r.stack.push(new Literals.Bool(lhs.toNative() == rhs.toNative()))
         });
 
         bindNativeWord('!=', (r:Types.Runtime) => {
-            let rhs = r.stack.pop() as Literals.Literal;
-            let lhs = r.stack.pop() as Literals.Literal;
+            let rhs = r.stack.pop() as Types.Literal;
+            let lhs = r.stack.pop() as Types.Literal;
             r.stack.push(new Literals.Bool(lhs.toNative() != rhs.toNative()))
         });
 
@@ -153,26 +153,26 @@ export namespace Images {
         // ---------------------------------------------------------------------
 
         bindNativeWord('>', (r:Types.Runtime) => {
-            let rhs = r.stack.pop() as Literals.Literal;
-            let lhs = r.stack.pop() as Literals.Literal;
+            let rhs = r.stack.pop() as Types.Literal;
+            let lhs = r.stack.pop() as Types.Literal;
             r.stack.push(new Literals.Bool(lhs.toNative() > rhs.toNative()))
         });
 
         bindNativeWord('>=', (r:Types.Runtime) => {
-            let rhs = r.stack.pop() as Literals.Literal;
-            let lhs = r.stack.pop() as Literals.Literal;
+            let rhs = r.stack.pop() as Types.Literal;
+            let lhs = r.stack.pop() as Types.Literal;
             r.stack.push(new Literals.Bool(lhs.toNative() >= rhs.toNative()))
         });
 
         bindNativeWord('<=', (r:Types.Runtime) => {
-            let rhs = r.stack.pop() as Literals.Literal;
-            let lhs = r.stack.pop() as Literals.Literal;
+            let rhs = r.stack.pop() as Types.Literal;
+            let lhs = r.stack.pop() as Types.Literal;
             r.stack.push(new Literals.Bool(lhs.toNative() <= rhs.toNative()))
         });
 
         bindNativeWord('<', (r:Types.Runtime) => {
-            let rhs = r.stack.pop() as Literals.Literal;
-            let lhs = r.stack.pop() as Literals.Literal;
+            let rhs = r.stack.pop() as Types.Literal;
+            let lhs = r.stack.pop() as Types.Literal;
             r.stack.push(new Literals.Bool(lhs.toNative() < rhs.toNative()))
         });
 
@@ -181,32 +181,32 @@ export namespace Images {
         // ---------------------------------------------------------------------
 
         bindNativeWord('+', (r:Types.Runtime) => {
-            let rhs = r.stack.pop() as Literals.Literal;
-            let lhs = r.stack.pop() as Literals.Literal;
+            let rhs = r.stack.pop() as Types.Literal;
+            let lhs = r.stack.pop() as Types.Literal;
             r.stack.push(new Literals.Num(lhs.toNative() + rhs.toNative()))
         });
 
         bindNativeWord('-', (r:Types.Runtime) => {
-            let rhs = r.stack.pop() as Literals.Literal;
-            let lhs = r.stack.pop() as Literals.Literal;
+            let rhs = r.stack.pop() as Types.Literal;
+            let lhs = r.stack.pop() as Types.Literal;
             r.stack.push(new Literals.Num(lhs.toNative() - rhs.toNative()))
         });
 
         bindNativeWord('*', (r:Types.Runtime) => {
-            let rhs = r.stack.pop() as Literals.Literal;
-            let lhs = r.stack.pop() as Literals.Literal;
+            let rhs = r.stack.pop() as Types.Literal;
+            let lhs = r.stack.pop() as Types.Literal;
             r.stack.push(new Literals.Num(lhs.toNative() * rhs.toNative()))
         });
 
         bindNativeWord('/', (r:Types.Runtime) => {
-            let rhs = r.stack.pop() as Literals.Literal;
-            let lhs = r.stack.pop() as Literals.Literal;
+            let rhs = r.stack.pop() as Types.Literal;
+            let lhs = r.stack.pop() as Types.Literal;
             r.stack.push(new Literals.Num(lhs.toNative() / rhs.toNative()))
         });
 
         bindNativeWord('%', (r:Types.Runtime) => {
-            let rhs = r.stack.pop() as Literals.Literal;
-            let lhs = r.stack.pop() as Literals.Literal;
+            let rhs = r.stack.pop() as Types.Literal;
+            let lhs = r.stack.pop() as Types.Literal;
             r.stack.push(new Literals.Num(lhs.toNative() % rhs.toNative()))
         });
 

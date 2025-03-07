@@ -1,15 +1,36 @@
 
-import { Literals } from './Literals';
-
 export namespace Types {
 
     // -------------------------------------------------------------------------
     // Common Types
     // -------------------------------------------------------------------------
 
+    export interface Literal {
+        toNum    () : number;
+        toBool   () : boolean;
+        toStr    () : string;
+        toNative () : any;
+        // toJSON () ...?
+        // copy?
+    }
+
+    export interface Stack {
+        get size  () : number;
+        push (l : Literal) : void;
+        pop  () : Literal;
+        peek () : Literal;
+        drop () : void;
+        dup  () : void;
+        over () : void;
+        rdup () : void;
+        swap () : void;
+        rot  () : void;
+        rrot () : void;
+    }
+
     export interface Runtime {
-        stack   : Literals.Stack;
-        control : Literals.Stack;
+        stack   : Stack;
+        control : Stack;
     }
 
     // -------------------------------------------------------------------------
@@ -45,7 +66,7 @@ export namespace Types {
         STDERR = '⚡️',
     }
 
-    export type OutputToken = { fh : OutputHandle, args : Literals.Literal[] }
+    export type OutputToken = { fh : OutputHandle, args : Literal[] }
 
     // -------------------------------------------------------------------------
     // Source
@@ -79,8 +100,11 @@ export namespace Types {
     export type WordBegin  = { type : 'WORD_BEGIN', token : Token, ident : Identifier  }
     export type WordEnd    = { type : 'WORD_END',   token : Token }
 
+    //export type BlockBegin = { type : 'BLOCK_BEGIN', token : Token }
+    //export type BlockEnd   = { type : 'BLOCK_END',   token : Token }
+
     export type Keyword    = { type : 'KEYWORD',    token : Token }
-    export type Const      = { type : 'CONST',      token : Token, literal : Literals.Literal }
+    export type Const      = { type : 'CONST',      token : Token, literal : Literal }
     export type Call       = { type : 'CALL',       token : Token }
 
     export type Parsed =
@@ -89,6 +113,8 @@ export namespace Types {
         | ModEnd
         | WordBegin
         | WordEnd
+        //| BlockBegin
+        //| BlockEnd
         | Keyword
         | Const
         | Call
@@ -97,9 +123,9 @@ export namespace Types {
     // Compiler Tokens
     // -------------------------------------------------------------------------
 
-    export type Push    = { addr : number, type : 'PUSH',    parsed : Const };
-    export type Execute = { addr : number, type : 'EXECUTE', parsed : Call  };
-    export type TODO    = { addr : number, type : 'TODO',    parsed : Parsed };
+    export type Push    = { type : 'PUSH',    parsed : Const };
+    export type Execute = { type : 'EXECUTE', parsed : Call  };
+    export type TODO    = { type : 'TODO',    parsed : Parsed };
 
     export type Compiled =
         | Push

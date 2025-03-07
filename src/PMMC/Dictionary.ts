@@ -11,8 +11,6 @@ export namespace Dictionary {
 
     export type Word = UserWord | NativeWord;
 
-    export type WordRef = { name : string };
-
     export class Catalog {
         public shelf : Map<string, Volume>;
         public stack : Volume[];
@@ -34,9 +32,9 @@ export namespace Dictionary {
         currentVolume     () : Volume { return this.stack[0] as Volume }
         exitCurrentVolume () : void { this.stack.shift() }
 
-        lookup (wordRef : WordRef | string) : Word | undefined {
+        lookup (name : string) : Word | undefined {
             for (const dict of this.shelf.values()) {
-                let word = dict.lookup(wordRef);
+                let word = dict.lookup(name);
                 if (word)
                     return word as Word;
             }
@@ -73,8 +71,7 @@ export namespace Dictionary {
             this.entries.set(e.name, e);
         }
 
-        lookup (wordRef : WordRef | string) : Word | undefined {
-            let name : string = typeof wordRef === 'string' ? wordRef : wordRef.name;
+        lookup (name : string) : Word | undefined {
             return this.entries.get(name);
         }
     }

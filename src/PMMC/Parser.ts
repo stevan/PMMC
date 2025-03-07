@@ -32,16 +32,23 @@ export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
                 case '::':
                     yield { type : 'MOD_BEGIN', token : token, ident : await this.getIdentifier(source) };
                     break;
-                case ':':
-                    yield { type : 'WORD_BEGIN', token : token, ident : await this.getIdentifier(source) };
-                    break;
-
                 case ';;':
                     yield { type : 'MOD_END', token : token };
+                    break;
+
+                case ':':
+                    yield { type : 'WORD_BEGIN', token : token, ident : await this.getIdentifier(source) };
                     break;
                 case ';':
                     yield { type : 'WORD_END', token : token };
                     break;
+
+                //case '[':
+                //    yield { type : 'BLOCK_BEGIN', token : token };
+                //    break;
+                //case ']':
+                //    yield { type : 'BLOCK_END', token : token };
+                //    break;
                 // -------------------------------------------------------------
                 // control structures
                 // -------------------------------------------------------------

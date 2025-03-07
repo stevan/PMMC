@@ -3,20 +3,17 @@ import { Types }      from './Types';
 import { Tapes }      from './Tapes';
 import { Dictionary } from './Dictionary';
 
-export class Compiler implements Types.Flow<Types.Compiled> {
-    private $parsed  : Types.Flow<Types.Parsed>;
+export class Compiler implements Types.Flow<Types.Parsed, Types.Compiled> {
     private $catalog : Dictionary.Catalog;
 
-    constructor (catalog : Dictionary.Catalog, parsed : Types.Flow<Types.Parsed>) {
-        this.$parsed  = parsed;
+    constructor (catalog : Dictionary.Catalog) {
         this.$catalog = catalog;
         this.$catalog.createVolume('_');
     }
 
-    async *flow () : Types.Stream<Types.Compiled> {
+    async *flow (source : Types.Stream<Types.Parsed>) : Types.Stream<Types.Compiled> {
         let addr_sequence = 0;
-        let flow = this.$parsed.flow();
-        for await (const parsed of flow) {
+        for await (const parsed of source) {
             switch (parsed.type) {
             case 'WORD_BEGIN':
                 this.$catalog.currentVolume().createUserWord(

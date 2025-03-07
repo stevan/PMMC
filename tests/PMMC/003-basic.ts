@@ -1,6 +1,4 @@
 
-import { Types }   from '../../src/PMMC/Types';
-
 import { Sources }    from '../../src/PMMC/Sources';
 import { Dictionary } from '../../src/PMMC/Dictionary';
 import { Tokenizer }  from '../../src/PMMC/Tokenizer';
@@ -9,38 +7,27 @@ import { Compiler }   from '../../src/PMMC/Compiler';
 
 async function Test003 () {
     let dict   = new Dictionary.Catalog();
-
-    dict.createVolume('_');
-
-    let stream = new Compiler(
-        dict,
-        new Parser(
-            new Tokenizer(
-                new Sources.FromArray(
-                    [
-                        ':: Foo',
-                        ': double SWAP * ;',
-                        ';;',
-                        `10 double
-                        DUP 15 > IF 15 + THEN
-                        10 DO
-                            DUP +
-                        LOOP
-                        `,
-                    ] as Types.Source[]
-                )
-            )
-        )
+    let source = new Sources.FromArray(
+        [
+            ':: Foo',
+            ': double SWAP * ;',
+            ';;',
+            `10 double
+            DUP 15 > IF 15 + THEN
+            10 DO
+                DUP +
+            LOOP
+            `,
+        ]
     );
 
-    for await (const input of stream.flow()) {
+    let tokenizer = new Tokenizer();
+    let parser    = new Parser();
+    let compiler  = new Compiler(dict);
+
+    for await (const input of compiler.flow(parser.flow(tokenizer.flow(source.flow())))) {
         console.log("GOT", input);
     }
-/*
-    let vol  = stream.getCatalog().shelf.get('Foo') as Dictionary.Volume;
-    let word = vol.entries.get('double') as Dictionary.UserWord;
-    console.log(word.body);
-*/
 }
 
 Test003();

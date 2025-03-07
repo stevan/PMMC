@@ -16,8 +16,12 @@ export namespace Types {
     // Core Types
     // -------------------------------------------------------------------------
 
-    export interface Flow<T> {
+    export interface Source<T> {
         flow () : Stream<T>;
+    }
+
+    export interface Flow<In, Out> {
+        flow (source: Stream<In>) : Stream<Out>;
     }
 
     export interface Tape<T> {
@@ -42,7 +46,7 @@ export namespace Types {
     // Source
     // -------------------------------------------------------------------------
 
-    export type Source = string;
+    export type SourceCode = string;
 
     // -------------------------------------------------------------------------
     // Tokens (rename to Lexed)

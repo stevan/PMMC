@@ -2,12 +2,7 @@
 import { Types }    from './Types';
 import { Literals } from './Literals';
 
-export class Parser implements Types.Flow<Types.Parsed> {
-    private $tokens : Types.Flow<Types.Token>;
-
-    constructor (tokens : Types.Flow<Types.Token>) {
-        this.$tokens = tokens;
-    }
+export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
 
     async getIdentifier (stream : Types.Stream<Types.Token>) : Promise<Types.Identifier> {
         return stream.next().then((ident) => {
@@ -17,9 +12,8 @@ export class Parser implements Types.Flow<Types.Parsed> {
         })
     }
 
-    async *flow () : Types.Stream<Types.Parsed> {
-        let flow = this.$tokens.flow();
-        for await (const token of flow) {
+    async *flow (source : Types.Stream<Types.Token>) : Types.Stream<Types.Parsed> {
+        for await (const token of source) {
             switch (token.type) {
             case Types.TokenType.STRING:
                 yield { type : 'CONST', token : token, literal : new Literals.Str(token.source) };
@@ -36,10 +30,10 @@ export class Parser implements Types.Flow<Types.Parsed> {
                 // definitions
                 // -------------------------------------------------------------
                 case '::':
-                    yield { type : 'MOD_BEGIN', token : token, ident : await this.getIdentifier(flow) };
+                    yield { type : 'MOD_BEGIN', token : token, ident : await this.getIdentifier(source) };
                     break;
                 case ':':
-                    yield { type : 'WORD_BEGIN', token : token, ident : await this.getIdentifier(flow) };
+                    yield { type : 'WORD_BEGIN', token : token, ident : await this.getIdentifier(source) };
                     break;
 
                 case ';;':

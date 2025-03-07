@@ -3,21 +3,19 @@ import { Types }      from './Types';
 import { Literals }   from './Literals';
 import { Dictionary } from './Dictionary';
 
-export class Interpreter implements Types.Runtime, Types.Flow<Types.OutputToken> {
-    public compiled : Types.Flow<Types.Compiled>;
+export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Types.OutputToken> {
     public catalog  : Dictionary.Catalog;
     public stack    : Literals.Stack;
     public control  : Literals.Stack;
 
-    constructor (catalog : Dictionary.Catalog, compiled : Types.Flow<Types.Compiled>) {
-        this.compiled = compiled;
+    constructor (catalog : Dictionary.Catalog) {
         this.catalog  = catalog;
         this.stack    = new Literals.Stack();
         this.control  = new Literals.Stack();
     }
 
-    async *flow () : Types.Stream<Types.OutputToken> {
-        yield* this.execute(this.compiled.flow(), "main");
+    async *flow (source : Types.Stream<Types.Compiled>) : Types.Stream<Types.OutputToken> {
+        yield* this.execute(source, "main");
     }
 
     async *execute (tape : Types.Stream<Types.Compiled>, callee : string) : Types.Stream<Types.OutputToken> {

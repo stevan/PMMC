@@ -5,21 +5,21 @@ import { Types } from './Types';
 
 export namespace Sources {
 
-    export class FromArray implements Types.Flow<Types.Source> {
-        private $array : Types.Source[]
+    export class FromArray implements Types.Source<Types.SourceCode> {
+        private $array : Types.SourceCode[]
 
-        constructor (array : Types.Source[]) {
+        constructor (array : Types.SourceCode[]) {
             this.$array = array;
         }
 
-        async *flow () : Types.Stream<Types.Source> {
+        async *flow () : Types.Stream<Types.SourceCode> {
             for (const source of this.$array) {
                 yield source;
             }
         }
     }
 
-    export class REPL implements Types.Flow<Types.Source> {
+    export class REPL implements Types.Source<Types.SourceCode> {
         private $readline : readline.ReadLine;
         private $running  : boolean;
 
@@ -31,16 +31,16 @@ export namespace Sources {
             });
         }
 
-        async *flow () : Types.Stream<Types.Source> {
+        async *flow () : Types.Stream<Types.SourceCode> {
             this.$running = true;
             while (this.$running) {
-                yield new Promise<Types.Source>((resolve) => {
+                yield new Promise<Types.SourceCode>((resolve) => {
                     this.$readline.question('? ', (answer : string) => {
                         if (answer == ':q') {
                             this.$running = false;
                             answer = '';
                         }
-                        resolve(answer as Types.Source);
+                        resolve(answer as Types.SourceCode);
                     });
                 })
             }

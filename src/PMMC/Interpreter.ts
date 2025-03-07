@@ -4,23 +4,19 @@ import { Literals }   from './Literals';
 import { Dictionary } from './Dictionary';
 
 export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Types.OutputToken> {
-    public catalog  : Dictionary.Catalog;
-    public stack    : Literals.Stack;
-    public control  : Literals.Stack;
+    public catalog : Dictionary.Catalog;
+    public stack   : Literals.Stack;
+    public control : Literals.Stack;
 
     constructor (catalog : Dictionary.Catalog) {
-        this.catalog  = catalog;
-        this.stack    = new Literals.Stack();
-        this.control  = new Literals.Stack();
+        this.catalog = catalog;
+        this.stack   = new Literals.Stack();
+        this.control = new Literals.Stack();
     }
 
-    async *flow (source : Types.Stream<Types.Compiled>) : Types.Stream<Types.OutputToken> {
-        yield* this.execute(source, "main");
-    }
-
-    async *execute (tape : Types.Stream<Types.Compiled>, callee : string) : Types.Stream<Types.OutputToken> {
-        yield this.put(Types.OutputHandle.STDERR, [ `ENTER  @ ${callee}` ]);
-        for await (const compiled of tape) {
+    async *flow (source : Types.Stream<Types.Compiled>, callee : string = 'main') : Types.Stream<Types.OutputToken> {
+        yield this.createOutputToken(Types.OutputHandle.STDERR, [ `ENTER  @ ${callee}` ]);
+        for await (const compiled of source) {
             let before = this.stack.copyStack();
             switch (compiled.type) {
             case 'EXECUTE':
@@ -30,26 +26,22 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
                     word.body(this);
                 }
                 else {
-                    yield* this.execute(word.body.flow(), word.name);
+                    yield* this.flow(word.body.flow(), word.name);
                 }
                 break;
             case 'PUSH':
                 this.stack.push(compiled.parsed.literal)
                 break;
             case 'TODO':
-                yield this.put(Types.OutputHandle.STDERR, [ "TODO", compiled ]);
+                yield this.createOutputToken(Types.OutputHandle.STDERR, [ "TODO", compiled ]);
                 break;
             }
-            yield this.put(Types.OutputHandle.STDERR, [ "  TICK :>", before, "--", this.stack ]);
+            yield this.createOutputToken(Types.OutputHandle.STDERR, [ "  TICK :>", before, "--", this.stack ]);
         }
-        yield this.put(Types.OutputHandle.STDERR, [ "EXIT  <:", this.stack ]);
+        yield this.createOutputToken(Types.OutputHandle.STDERR, [ "EXIT  <:", this.stack ]);
     }
 
-    //--------------------------------------------------------------------------
-    // Builtins ...
-    //--------------------------------------------------------------------------
-
-    private put (fh : Types.OutputHandle, args : any[]) : Types.OutputToken {
+    private createOutputToken (fh : Types.OutputHandle, args : any[]) : Types.OutputToken {
         return {
             fh   : fh,
             args : args.map((arg) => {

@@ -2,12 +2,71 @@
 import { Types }      from './Types';
 import { Literals }   from './Literals';
 import { Dictionary } from './Dictionary';
-//import { Tokenizer }   from './Tokenizer';
-//import { Parser }      from './Parser';
-//import { Compiler }    from './Compiler';
-//import { Interpreter } from './Interpreter';
+import { Tokenizer }   from './Tokenizer';
+import { Parser }      from './Parser';
+import { Compiler }    from './Compiler';
+import { Interpreter } from './Interpreter';
+import { Sources }     from './Sources';
+import { Sinks }       from './Sinks';
 
 export namespace Images {
+
+    export class Image {
+        public catalog     : Dictionary.Catalog;
+        public tokenizer   : Tokenizer;
+        public parser      : Parser;
+        public compiler    : Compiler;
+        public interpreter : Interpreter;
+
+        constructor () {
+            this.catalog     = new Dictionary.Catalog();
+            this.tokenizer   = new Tokenizer();
+            this.parser      = new Parser();
+            this.compiler    = new Compiler(this.catalog);
+            this.interpreter = new Interpreter(this.catalog);
+
+            this.catalog.addVolume(createCoreVolume());
+        }
+
+        // ---------------------------------------------------------------------
+
+        fromString (src : Types.SourceCode) : Types.Source<Types.SourceCode> {
+            return new Sources.FromString(src)
+        }
+
+        fromArray (src : Types.SourceCode[]) : Types.Source<Types.SourceCode> {
+            return new Sources.FromArray(src)
+        }
+
+        fromREPL () : Types.Source<Types.SourceCode> {
+            return new Sources.REPL()
+        }
+
+        // ---------------------------------------------------------------------
+
+        toConsole () : Types.Sink<Types.OutputToken> {
+            return new Sinks.Console()
+        }
+
+        // ---------------------------------------------------------------------
+
+        async run (
+            input  : Types.Source<Types.SourceCode>,
+            output : Types.Sink<Types.OutputToken>
+        ) : Promise<void> {
+            await output.flow(
+                this.interpreter.flow(
+                    this.compiler.flow(
+                        this.parser.flow(
+                            this.tokenizer.flow(
+                                input.flow())))));
+        }
+
+    }
+
+    // -------------------------------------------------------------------------
+    // Image Utilities
+    // -------------------------------------------------------------------------
 
     export function createCoreVolume () : Dictionary.Volume {
         let vol = new Dictionary.Volume('CORE');

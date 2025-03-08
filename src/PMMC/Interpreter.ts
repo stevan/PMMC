@@ -15,7 +15,7 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
     }
 
     async *flow (source : Types.Stream<Types.Compiled>, callee : string = 'main') : Types.Stream<Types.OutputToken> {
-        yield this.createOutputToken(Types.OutputHandle.STDERR, [ `ENTER  @ ${callee}` ]);
+        yield this.createOutputToken(Types.OutputHandle.STDERR, [ `ENTER => ${callee}` ]);
         for await (const compiled of source) {
             let before = this.stack.copyStack();
             switch (compiled.type) {
@@ -31,14 +31,26 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
                 }
                 break;
             case 'COND':
-                let tape = compiled.tape;
+                let condTape = compiled.tape;
                 let cond = this.stack.pop() as Literals.Bool;
                 Literals.assertBool(cond);
                 yield this.createOutputToken(Types.OutputHandle.STDERR, [ `  COND ?` ]);
                 if (cond.toBool()) {
-                    yield* this.flow(tape.flow(), 'COND');
+                    yield* this.flow(condTape.flow(), 'COND');
                 }
                 this.stack.push(cond);
+                break;
+            case 'LOOP':
+                yield this.createOutputToken(Types.OutputHandle.STDERR, [ ` +LOOP @` ]);
+                let loopTape = compiled.tape;
+                let looping = true;
+                while (looping) {
+                    yield* this.flow(loopTape.flow(), 'LOOP');
+                    let cond = this.stack.pop() as Literals.Bool;
+                    Literals.assertBool(cond);
+                    looping = cond.toBool();
+                }
+                yield this.createOutputToken(Types.OutputHandle.STDERR, [ ` -LOOP @` ]);
                 break;
             case 'PUSH':
                 yield this.createOutputToken(Types.OutputHandle.STDERR, [ `  PUSH + ${compiled.parsed.token.source}` ]);

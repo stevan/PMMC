@@ -100,13 +100,18 @@ export namespace Types {
     export type WordBegin  = { type : 'WORD_BEGIN', token : Token, ident : Identifier  }
     export type WordEnd    = { type : 'WORD_END',   token : Token }
 
-    export type BlockBegin = { type : 'BLOCK_BEGIN', token : Token }
-    export type BlockCond  = { type : 'BLOCK_COND',  token : Token }
-    export type BlockLoop  = { type : 'BLOCK_LOOP',  token : Token }
+    export type BlockBegin      = { type : 'BLOCK_BEGIN',      token : Token }
+    export type BlockCond       = { type : 'BLOCK_COND',       token : Token }
+    export type BlockLoopCond   = { type : 'BLOCK_LOOP_COND',  token : Token }
+    export type BlockLoopCount  = { type : 'BLOCK_LOOP_COUNT', token : Token }
 
-    export type Keyword    = { type : 'KEYWORD',    token : Token }
-    export type Const      = { type : 'CONST',      token : Token, literal : Literal }
-    export type Call       = { type : 'CALL',       token : Token }
+    export type Keyword    = { type : 'KEYWORD', token : Token }
+    export type Const      = { type : 'CONST',   token : Token, literal : Literal }
+    export type Call       = { type : 'CALL',    token : Token }
+
+    export type BlockLoop =
+        | BlockLoopCond
+        | BlockLoopCount
 
     export type Parsed =
         | Identifier

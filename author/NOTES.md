@@ -6,6 +6,8 @@
   <block>
 ]?            // pop TOS, if true, run this block, put old TOS back on TOS
 ]@?           // always run once, then if TOS if true, re-run this block
+]@+           // uses 2 numbers in the control stack to control iteration, may not run
+]@            // raw block, runs forever, iteration is controlled with !NEXT and !LAST operations
 
 ```
 
@@ -100,7 +102,31 @@ SWAP            (        n 10 0 -- n 0 10   ) (      )
 
 ```
 
+## Raw Loops
 
+```
+1 
+BEGIN
+    1 + 
+    DUP 2 % 0 != !NEXT
+    DUP     9 == !LAST
+END
+
+
+1                            (      -- 1     )               
+[                            (    1 -- 1 [.. ) << start of loop              
+    1                        (    1 -- 1 1   )                       
+    +                        (  1 1 -- 2     )                       
+    DUP                      (    2 -- 2 2   )                                  
+    2 % 0 ==                 (  2 2 -- 2 #t  )                                  
+      !NEXT                  (    2 --       ) << Jumps to start of loop        
+    DUP                      (    9 -- 9 9   ) << on last iteration ...
+    9 ==                     (  9 9 -- 9 #t  )                                  
+      !LAST                  ( 9 #t -- 9     ) << Jumps out of the loop here                         
+]@                           (    9 -- 9     )                       
+
+
+```
 
 
 

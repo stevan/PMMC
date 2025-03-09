@@ -28,8 +28,7 @@ export class Compiler implements Types.Flow<Types.Parsed, Types.Compiled> {
                 tape_stack.unshift(new Tapes.CompiledTape());
                 break;
             case 'BLOCK_COND':
-            case 'BLOCK_LOOP_COND':
-            case 'BLOCK_LOOP_COUNT':
+            case 'BLOCK_LOOP':
                 let blockTape = tape_stack.shift();
                 if (!blockTape)
                     throw new Error("Expected block tape on the stack and got nothing!");

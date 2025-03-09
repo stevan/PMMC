@@ -1,18 +1,25 @@
 
 import * as PMMC from '../../src/PMMC';
 
-async function Test008 () {
+async function Test009 () {
     let dict   = new PMMC.Dictionary.Catalog();
     dict.addVolume(PMMC.Images.createCoreVolume());
 
-    // let source = new PMMC.Sources.FromString(`
-    //     10 [ DUP 1 - DUP 0 != ]@?
-    //     10 [ DUP 0 != [ DUP 2 - ]? ]@?
-    // `);
-
     let source = new PMMC.Sources.FromString(`
-        10 BEGIN DUP 1 - DUP 0 == UNTIL
-        10 BEGIN DUP 0 != WHILE DUP 2 - REPEAT
+        : EGGSIZE // ( n -- )
+               DUP 18 < IF  "reject"      ELSE
+               DUP 21 < IF  "small"       ELSE
+               DUP 24 < IF  "medium"      ELSE
+               DUP 27 < IF  "large"       ELSE
+               DUP 30 < IF  "extra large" ELSE
+                  "error"
+               THEN THEN THEN THEN THEN SWAP DROP ;
+        10  EGGSIZE
+        19  EGGSIZE
+        22  EGGSIZE
+        25  EGGSIZE
+        29  EGGSIZE
+        31  EGGSIZE
     `);
 
     let tokenizer   = new PMMC.Tokenizer();
@@ -29,5 +36,5 @@ async function Test008 () {
                             source.flow())))));
 }
 
-Test008();
+Test009();
 

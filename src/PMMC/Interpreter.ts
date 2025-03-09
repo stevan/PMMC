@@ -15,14 +15,15 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
     }
 
     async *flow (source : Types.Stream<Types.Compiled>, callee : string = 'main') : Types.Stream<Types.OutputToken> {
-        yield this.createOutputToken(Types.OutputHandle.STDERR, [ `ENTER => ${callee}` ]);
+        yield this.createOutputToken(Types.OutputHandle.INFO, [ `ENTER => ${callee}` ]);
         for await (const compiled of source) {
-            let before = this.stack.copyStack();
+            let beforeStack   = this.stack.copyStack();
+            let beforeControl = this.control.copyStack();
             switch (compiled.type) {
             case 'EXECUTE':
                 let word = this.catalog.lookup(compiled.parsed.token.source);
                 if (!word) throw new Error(`Could not find word ${compiled.parsed.token.source}`)
-                yield this.createOutputToken(Types.OutputHandle.STDERR, [ `  CALL : ${word.name}` ]);
+                yield this.createOutputToken(Types.OutputHandle.INFO, [ `  CALL : ${word.name}` ]);
                 if (word.type == 'NATIVE') {
                     word.body(this);
                 }
@@ -34,14 +35,14 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
                 let condTape = compiled.tape;
                 let cond = this.stack.pop() as Literals.Bool;
                 Literals.assertBool(cond);
-                yield this.createOutputToken(Types.OutputHandle.STDERR, [ `  COND ?` ]);
+                yield this.createOutputToken(Types.OutputHandle.INFO, [ `  COND ?` ]);
                 if (cond.toBool()) {
                     yield* this.flow(condTape.flow(), 'COND');
                 }
                 this.stack.push(cond);
                 break;
             case 'LOOP':
-                yield this.createOutputToken(Types.OutputHandle.STDERR, [ ` +LOOP @` ]);
+                yield this.createOutputToken(Types.OutputHandle.INFO, [ ` +LOOP @` ]);
                 let loopTape = compiled.tape;
                 let looping = true;
                 while (looping) {
@@ -50,19 +51,20 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
                     Literals.assertBool(cond);
                     looping = cond.toBool();
                 }
-                yield this.createOutputToken(Types.OutputHandle.STDERR, [ ` -LOOP @` ]);
+                yield this.createOutputToken(Types.OutputHandle.INFO, [ ` -LOOP @` ]);
                 break;
             case 'PUSH':
-                yield this.createOutputToken(Types.OutputHandle.STDERR, [ `  PUSH + ${compiled.parsed.token.source}` ]);
+                yield this.createOutputToken(Types.OutputHandle.INFO, [ `  PUSH + ${compiled.parsed.token.source}` ]);
                 this.stack.push(compiled.parsed.literal)
                 break;
             case 'TODO':
-                yield this.createOutputToken(Types.OutputHandle.STDERR, [ "TODO", compiled ]);
+                yield this.createOutputToken(Types.OutputHandle.WARN, [ "TODO", compiled ]);
                 break;
             }
-            yield this.createOutputToken(Types.OutputHandle.STDERR, [ "    [] :", before, "--", this.stack ]);
+            yield this.createOutputToken(Types.OutputHandle.DEBUG, [ " stck[] :", beforeStack,   "--", this.stack   ]);
+            yield this.createOutputToken(Types.OutputHandle.DEBUG, [ " ctrl[] :", beforeControl, "--", this.control ]);
         }
-        yield this.createOutputToken(Types.OutputHandle.STDERR, [ "EXIT   ^", this.stack ]);
+        yield this.createOutputToken(Types.OutputHandle.INFO, [ "EXIT   ^", this.stack ]);
     }
 
     private createOutputToken (fh : Types.OutputHandle, args : any[]) : Types.OutputToken {

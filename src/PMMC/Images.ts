@@ -113,10 +113,10 @@ export namespace Images {
         // ^R!  (   --   ) (   --   ) drop the top of the control stack
         // ---------------------------------------------------------------------
 
-        bindNativeWord('>R!', (r:Types.Runtime) => r.control.push(r.stack.pop()));
-        bindNativeWord('<R!', (r:Types.Runtime) => r.stack.push(r.control.pop()));
-        bindNativeWord('.R!', (r:Types.Runtime) => r.stack.push(r.control.peek()));
-        bindNativeWord('^R!', (r:Types.Runtime) => r.control.drop());
+        bindNativeWord('>R', (r:Types.Runtime) => r.control.push(r.stack.pop()));
+        bindNativeWord('<R', (r:Types.Runtime) => r.stack.push(r.control.pop()));
+        bindNativeWord('.R', (r:Types.Runtime) => r.stack.push(r.control.peek()));
+        bindNativeWord('^R', (r:Types.Runtime) => r.control.drop());
 
         // =====================================================================
         // BinOps

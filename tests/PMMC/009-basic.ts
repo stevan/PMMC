@@ -1,30 +1,25 @@
 
 import * as PMMC from '../../src/PMMC';
 
-async function Test007 () {
+async function Test009 () {
     let dict   = new PMMC.Dictionary.Catalog();
     dict.addVolume(PMMC.Images.createCoreVolume());
 
     // let source = new PMMC.Sources.FromString(`
-    //         #t [ "YO!" ]? DROP
-    //         #f [ "NO!" ]? DROP
-    //         #t [ "Hey" ]? ! [ "Ho" ]? DROP
-    //         #f [ "Hey" ]? ! [ "Ho" ]? DROP
-    //         #f [ "Hey" ]? ! [
-    //             #t [ "Hip" ]? DROP
-    //             #f [ "Hop" ]? ! [ "-Hop" ~ "Horray" ]? DROP
-    //         ]? DROP
+    //     10
+    //     10 0
+    //     SWAP [
+    //         >R 1 + >R
+    //         DUP 1 -
+    //         <R <R OVER OVER <
+    //     ]@? DROP DROP
     // `);
 
     let source = new PMMC.Sources.FromString(`
-            #t IF "YO!" THEN
-            #f IF "NO!" THEN
-            #t IF "Hey" ELSE "Ho" THEN
-            #f IF "Hey" ELSE "Ho" THEN
-            #f IF "Hey" ELSE
-                #t IF "Hip" THEN
-                #f IF "Hop" ELSE "-Hop" ~ "Horray" THEN
-            THEN
+        10
+        10 0 DO
+            DUP 1 -
+        LOOP
     `);
 
     let tokenizer   = new PMMC.Tokenizer();
@@ -41,5 +36,5 @@ async function Test007 () {
                             source.flow())))));
 }
 
-Test007();
+Test009();
 

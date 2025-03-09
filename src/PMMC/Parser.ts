@@ -52,24 +52,55 @@ export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
                     break;
 
                 case ']@?':
-                    yield { type : 'BLOCK_LOOP_COND', token : token };
-                    break;
-                case ']@+':
-                    yield { type : 'BLOCK_LOOP_COUNT', token : token };
+                    yield { type : 'BLOCK_LOOP', token : token };
                     break;
                 // -------------------------------------------------------------
                 // control structures
                 // -------------------------------------------------------------
                 case 'IF':
+                    yield { type : 'BLOCK_BEGIN', token : token };
+                    break;
                 case 'ELSE':
+                    yield { type : 'BLOCK_COND', token : token };
+                    yield { type : 'CALL', token : { type : Types.TokenType.WORD, source : '!'} };
+                    yield { type : 'BLOCK_BEGIN', token : token };
+                    break;
                 case 'THEN':
+                    yield { type : 'BLOCK_COND', token : token };
+                    yield { type : 'CALL', token : { type : Types.TokenType.WORD, source : 'DROP'} };
+                    break;
+
                 case 'BEGIN':
+                    yield { type : 'BLOCK_BEGIN', token : token };
+                    break;
                 case 'WHILE':
+                    yield { type : 'BLOCK_BEGIN', token : token };
+                    break;
                 case 'UNTIL':
+                    yield { type : 'CALL', token : { type : Types.TokenType.WORD, source : '!'} };
+                    yield { type : 'BLOCK_LOOP', token : token };
+                    break;
                 case 'REPEAT':
+                    yield { type : 'BLOCK_COND', token : token };
+                    yield { type : 'BLOCK_LOOP', token : token };
+                    break;
                 case 'DO':
+                    yield { type : 'CALL',        token : { type : Types.TokenType.WORD, source : 'SWAP'} };
+                    yield { type : 'BLOCK_BEGIN', token : token };
+                    yield { type : 'CALL',        token : { type : Types.TokenType.WORD,   source : '>R' } };
+                    yield { type : 'CONST',       token : { type : Types.TokenType.NUMBER, source : '1' }, literal : new Literals.Num(1) };
+                    yield { type : 'CALL',        token : { type : Types.TokenType.WORD,   source : '+' } };
+                    yield { type : 'CALL',        token : { type : Types.TokenType.WORD,   source : '>R' } };
+                    break;
                 case 'LOOP':
-                    yield { type : 'KEYWORD', token : token };
+                    yield { type : 'CALL',       token : { type : Types.TokenType.WORD, source : '<R' } };
+                    yield { type : 'CALL',       token : { type : Types.TokenType.WORD, source : '<R' } };
+                    yield { type : 'CALL',       token : { type : Types.TokenType.WORD, source : 'OVER' } };
+                    yield { type : 'CALL',       token : { type : Types.TokenType.WORD, source : 'OVER' } };
+                    yield { type : 'CALL',       token : { type : Types.TokenType.WORD, source : '<' } };
+                    yield { type : 'BLOCK_LOOP', token : token };
+                    yield { type : 'CALL',       token : { type : Types.TokenType.WORD, source : 'DROP' } };
+                    yield { type : 'CALL',       token : { type : Types.TokenType.WORD, source : 'DROP' } };
                     break;
                 // -------------------------------------------------------------
                 // calls

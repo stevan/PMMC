@@ -104,6 +104,7 @@ export namespace Types {
     export type WordEnd    = { type : 'WORD_END',   token : Token }
 
     export type BlockBegin = { type : 'BLOCK_BEGIN', token : Token }
+    export type BlockExec  = { type : 'BLOCK_EXEC',  token : Token }
     export type BlockCond  = { type : 'BLOCK_COND',  token : Token }
     export type BlockLoop  = { type : 'BLOCK_LOOP',  token : Token }
     export type BlockNext  = { type : 'BLOCK_NEXT',  token : Token }
@@ -121,6 +122,7 @@ export namespace Types {
         | WordBegin
         | WordEnd
         | BlockBegin
+        | BlockExec
         | BlockCond
         | BlockLoop
         | BlockControl
@@ -134,6 +136,7 @@ export namespace Types {
     export type Goto    = { type : 'GOTO',    parsed : BlockControl, tape : Tape<Compiled> };
     export type Loop    = { type : 'LOOP',    parsed : BlockLoop,    tape : Tape<Compiled> };
     export type Cond    = { type : 'COND',    parsed : BlockCond,    tape : Tape<Compiled> };
+    export type Do      = { type : 'DO',      parsed : BlockExec,    tape : Tape<Compiled> };
     export type Push    = { type : 'PUSH',    parsed : Const }; // << move the `literal` here instead
     export type Execute = { type : 'EXECUTE', parsed : Call  };
     export type TODO    = { type : 'TODO',    parsed : Parsed };

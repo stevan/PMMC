@@ -69,6 +69,11 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
                 }
                 yield this.createOutputToken(Types.OutputHandle.INFO, [ ` -LOOP @` ]);
                 break;
+            case 'DO':
+                yield this.createOutputToken(Types.OutputHandle.INFO, [ `   +DO :` ]);
+                yield* this.flow(compiled.tape.flow(), 'DO');
+                yield this.createOutputToken(Types.OutputHandle.INFO, [ `   -DO :` ]);
+                break;
             case 'PUSH':
                 yield this.createOutputToken(Types.OutputHandle.INFO, [ `  PUSH + ${compiled.parsed.token.source}` ]);
                 this.stack.push(compiled.parsed.literal)

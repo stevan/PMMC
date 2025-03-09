@@ -43,8 +43,15 @@ export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
                     yield { type : 'WORD_END', token : token };
                     break;
 
+                // -------------------------------------------------------------
+                // blocks
+                // -------------------------------------------------------------
                 case '[':
                     yield { type : 'BLOCK_BEGIN', token : token };
+                    break;
+
+                case ']+':
+                    yield { type : 'BLOCK_EXEC', token : token };
                     break;
 
                 case ']?':

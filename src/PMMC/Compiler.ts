@@ -29,12 +29,17 @@ export class Compiler implements Types.Flow<Types.Parsed, Types.Compiled> {
                 break;
             case 'BLOCK_COND':
             case 'BLOCK_LOOP':
+            case 'BLOCK_EXEC':
                 let blockTape = tape_stack.shift() as Tapes.BlockTape;
                 if (!blockTape)
                     throw new Error("Expected block tape on the stack and got nothing!");
 
                 let block = {
-                    type   : (parsed.type == 'BLOCK_COND' ? 'COND' : 'LOOP'),
+                    type   : (parsed.type == 'BLOCK_COND'
+                                    ? 'COND'
+                                    : parsed.type == 'BLOCK_LOOP'
+                                        ? 'LOOP'
+                                        : 'DO'),
                     tape   : blockTape,
                     parsed : parsed,
                 } as Types.Compiled;

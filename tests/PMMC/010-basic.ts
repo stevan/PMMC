@@ -7,14 +7,14 @@ async function Test009 () {
 
     let source = new PMMC.Sources.FromString(`
         : EGGSIZE // ( n -- )
-            #t [
+            [
                 DUP 18 < [  "reject"      ]? @^
                 DUP 21 < [  "small"       ]? @^
                 DUP 24 < [  "medium"      ]? @^
                 DUP 27 < [  "large"       ]? @^
                 DUP 30 < [  "extra large" ]? @^
                             "error"
-            ]? DROP
+            ]+
         ;
 
         // : EGGSIZE // ( n -- )

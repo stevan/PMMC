@@ -54,6 +54,14 @@ export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
                 case ']@?':
                     yield { type : 'BLOCK_LOOP', token : token };
                     break;
+
+                case '@+':
+                    yield { type : 'BLOCK_NEXT', token : token };
+                    break;
+
+                case '@^':
+                    yield { type : 'BLOCK_LAST', token : token };
+                    break;
                 // -------------------------------------------------------------
                 // control structures
                 // -------------------------------------------------------------

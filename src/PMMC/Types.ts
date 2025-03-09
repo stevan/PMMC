@@ -106,10 +106,13 @@ export namespace Types {
     export type BlockBegin = { type : 'BLOCK_BEGIN', token : Token }
     export type BlockCond  = { type : 'BLOCK_COND',  token : Token }
     export type BlockLoop  = { type : 'BLOCK_LOOP',  token : Token }
+    export type BlockNext  = { type : 'BLOCK_NEXT',  token : Token }
+    export type BlockLast  = { type : 'BLOCK_LAST',  token : Token }
 
-    export type Keyword = { type : 'KEYWORD', token : Token }
     export type Const   = { type : 'CONST',   token : Token, literal : Literal }
     export type Call    = { type : 'CALL',    token : Token }
+
+    export type BlockControl = BlockNext | BlockLast
 
     export type Parsed =
         | Identifier
@@ -120,7 +123,7 @@ export namespace Types {
         | BlockBegin
         | BlockCond
         | BlockLoop
-        | Keyword
+        | BlockControl
         | Const
         | Call
 
@@ -128,13 +131,15 @@ export namespace Types {
     // Compiler Tokens
     // -------------------------------------------------------------------------
 
-    export type Loop    = { type : 'LOOP',    parsed : BlockLoop, tape : Tape<Compiled> };
-    export type Cond    = { type : 'COND',    parsed : BlockCond, tape : Tape<Compiled> };
+    export type Goto    = { type : 'GOTO',    parsed : BlockControl, tape : Tape<Compiled> };
+    export type Loop    = { type : 'LOOP',    parsed : BlockLoop,    tape : Tape<Compiled> };
+    export type Cond    = { type : 'COND',    parsed : BlockCond,    tape : Tape<Compiled> };
     export type Push    = { type : 'PUSH',    parsed : Const }; // << move the `literal` here instead
     export type Execute = { type : 'EXECUTE', parsed : Call  };
     export type TODO    = { type : 'TODO',    parsed : Parsed };
 
     export type Compiled =
+        | Goto
         | Loop
         | Cond
         | Push

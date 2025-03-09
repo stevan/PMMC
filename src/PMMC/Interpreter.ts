@@ -1,5 +1,6 @@
 
 import { Types }      from './Types';
+import { Tapes }      from './Tapes';
 import { Literals }   from './Literals';
 import { Dictionary } from './Dictionary';
 
@@ -30,6 +31,21 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
                 else {
                     yield* this.flow(word.body.flow(), word.name);
                 }
+                break;
+            case 'GOTO':
+                let gotoTape = compiled.tape as Tapes.BlockTape;
+                let goto = this.stack.pop() as Literals.Bool;
+                Literals.assertBool(goto);
+                if (goto.toBool()) {
+                    if (compiled.parsed.type == 'BLOCK_NEXT') {
+                        yield this.createOutputToken(Types.OutputHandle.INFO, [ `  NEXT ?` ]);
+                        gotoTape.next();
+                    } else {
+                        yield this.createOutputToken(Types.OutputHandle.INFO, [ `  LAST ?` ]);
+                        gotoTape.last();
+                    }
+                }
+                //this.stack.push(goto);
                 break;
             case 'COND':
                 let condTape = compiled.tape;

@@ -4,7 +4,7 @@ import { Types } from './Types';
 const IS_NUMBER   = /^-?[0-9][0-9_]*$/;
 const IS_STRING   = /^"[^"]*"|'[^']*'$/;
 const IS_BOOLEAN  = /^#t|#f$/;
-const IS_SYMBOL   = /^\*\{\S+\}$/;
+const IS_SYMBOL   = /^\`\S+$/;
 const IS_WORD     = /^\S+$/;
 const IS_COMMENT  = /^\/\/\s.*\n$/;
 

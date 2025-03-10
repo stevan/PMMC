@@ -38,7 +38,7 @@ export namespace Literals {
         toStr    () : string  { return this.value }
         toNative () : any { return this.value }
 
-        toName () : string { return this.value.slice(2, this.value.length - 1) }
+        toName () : string { return this.value.slice(1) }
     }
 
     export class Block implements Types.Literal {

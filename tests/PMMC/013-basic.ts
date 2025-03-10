@@ -6,16 +6,11 @@ async function Test013 () {
     dict.addVolume(PMMC.Images.createCoreVolume());
 
     // symbol table manipulation
-    let source = new PMMC.Sources.FromString("/
-        [ 10 0 ] *{foo} :=                    /
-                                              /
-        foo                                   /
-                                              /
-        [ 10000 100 ] *{foo} :=               /
-                                              /
-        foo                                   /
-                                              /
-        10 >$ {$x} :=                         /
+    let source = new PMMC.Sources.FromString("\
+        [ 10 0 ] `foo :=                      \
+        foo                                   \
+        [ 10000 100 ] `foo :=                 \
+        foo                                   \
     ");
 
     let tokenizer   = new PMMC.Tokenizer();

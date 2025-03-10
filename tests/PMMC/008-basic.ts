@@ -3,7 +3,7 @@ import * as PMMC from '../../src/PMMC';
 
 async function Test008 () {
     let dict   = new PMMC.Dictionary.Catalog();
-    dict.addVolume(PMMC.Images.createCoreVolume());
+    PMMC.Images.createCoreVolume(dict);
 
     // let source = new PMMC.Sources.FromString(`
     //     10 [ DUP 1 - DUP 0 != ]@?

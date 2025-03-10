@@ -17,6 +17,8 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
         this.pad     = new Literals.Pad();
         this.stack   = new Literals.Stack();
         this.control = new Literals.Stack();
+
+        this.catalog.createVolume('__');
     }
 
     put (...args : Types.Literal[]) : void {

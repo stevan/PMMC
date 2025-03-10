@@ -1,5 +1,9 @@
 
 
+CORE  - holds all builtins
+_     - holds all compiled words in this session (those created with :)
+__    - holds any runtime created words (volatile created (or overwritten) with :=)
+
 
 
 

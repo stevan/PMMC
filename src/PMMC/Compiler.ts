@@ -9,13 +9,20 @@ export class Compiler implements Types.Flow<Types.Parsed, Types.Compiled> {
 
     constructor (catalog : Dictionary.Catalog) {
         this.$catalog = catalog;
-        this.$catalog.createVolume('_');
     }
 
     async *flow (source : Types.Stream<Types.Parsed>) : Types.Stream<Types.Compiled> {
+        this.$catalog.createVolume('_');
+
         let tape_stack : Types.Tape<Types.Compiled>[] = [];
         for await (const parsed of source) {
             switch (parsed.type) {
+            case 'MOD_BEGIN':
+                this.$catalog.createVolume(parsed.ident.token.source);
+                break;
+            case 'MOD_END':
+                this.$catalog.exitCurrentVolume();
+                break;
             case 'WORD_BEGIN':
                 let wordTape = new Tapes.CompiledTape();
                 tape_stack.unshift(wordTape);
@@ -125,5 +132,7 @@ export class Compiler implements Types.Flow<Types.Parsed, Types.Compiled> {
                 yield { type : 'TODO', parsed : parsed }
             }
         }
+
+        this.$catalog.exitCurrentVolume();
     }
  }

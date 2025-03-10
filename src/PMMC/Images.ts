@@ -25,7 +25,7 @@ export namespace Images {
             this.compiler    = new Compiler(this.catalog);
             this.interpreter = new Interpreter(this.catalog);
 
-            this.catalog.addVolume(createCoreVolume());
+            createCoreVolume(this.catalog);
         }
 
         // ---------------------------------------------------------------------
@@ -76,8 +76,8 @@ export namespace Images {
     // Image Utilities
     // -------------------------------------------------------------------------
 
-    export function createCoreVolume () : Dictionary.Volume {
-        let vol = new Dictionary.Volume('CORE');
+    export function createCoreVolume (catalog : Dictionary.Catalog) : void {
+        let vol = catalog.createVolume('CORE');
 
         const bindNativeWord = (
             name : string,
@@ -89,17 +89,22 @@ export namespace Images {
         // =====================================================================
 
         // ---------------------------------------------------------------------
-        // Variables
+        // Bind/Unbind
         // ---------------------------------------------------------------------
 
         bindNativeWord(':=', (r:Types.Runtime) => {
             let symbol = r.stack.pop() as Literals.Sym;
             let block  = r.stack.pop() as Literals.Block;
-            vol.bind({
+            catalog.currentVolume().bind({
                 type : 'USER',
                 name : symbol.toName(),
                 body : block.tape
             });
+        });
+
+        bindNativeWord(':^', (r:Types.Runtime) => {
+            let symbol = r.stack.pop() as Literals.Sym;
+            catalog.currentVolume().unbind(symbol.toName());
         });
 
         // ---------------------------------------------------------------------
@@ -248,7 +253,7 @@ export namespace Images {
             r.stack.push(new Literals.Num(lhs.toNative() % rhs.toNative()))
         });
 
-        return vol;
+        catalog.exitCurrentVolume();
     }
 
 }

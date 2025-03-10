@@ -3,7 +3,7 @@ import * as PMMC from '../../src/PMMC';
 
 async function Test004 () {
     let dict   = new PMMC.Dictionary.Catalog();
-    dict.addVolume(PMMC.Images.createCoreVolume());
+    PMMC.Images.createCoreVolume(dict);
 
     let source = new PMMC.Sources.FromString(`
         : plusTen     10 + ;

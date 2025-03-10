@@ -7,7 +7,7 @@ async function Test002 () {
             ':: Foo',
             ': double SWAP * ;',
             ';;',
-            `10 double
+            `10 Foo::double
             DUP 15 > [ 15 + ]?
 
             10 [ 1 - 0 > ]@

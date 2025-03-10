@@ -33,7 +33,28 @@ export namespace Dictionary {
         exitCurrentVolume () : void { this.stack.shift() }
 
         lookup (name : string) : Word | undefined {
-            for (const dict of this.shelf.values()) {
+            //console.log(this.shelf.keys());
+
+            if (name.indexOf('::') != -1) {
+                let parts = name.split('::');
+
+                let mod = parts[0] as string;
+                if (this.shelf.has(mod)) {
+                    let vol = this.shelf.get(mod) as Volume;
+                    return vol.lookup(parts[1] as string);
+                }
+                else {
+                    throw new Error(`Cannot find module ${mod}`);
+                }
+            }
+
+            const searchCandidates : Volume[] = [
+                this.shelf.get('CORE') as Volume,
+                this.shelf.get('_')    as Volume,
+                this.shelf.get('__')   as Volume,
+            ];
+
+            for (const dict of searchCandidates) {
                 let word = dict.lookup(name);
                 if (word)
                     return word as Word;
@@ -69,6 +90,10 @@ export namespace Dictionary {
 
         bind (e : Word) : void {
             this.entries.set(e.name, e);
+        }
+
+        unbind (name : string) : void {
+            this.entries.delete(name);
         }
 
         lookup (name : string) : Word | undefined {

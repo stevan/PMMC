@@ -3,27 +3,25 @@ import * as PMMC from '../../src/PMMC';
 
 async function Test012 () {
     let dict   = new PMMC.Dictionary.Catalog();
-    dict.addVolume(PMMC.Images.createCoreVolume());
+    PMMC.Images.createCoreVolume(dict);
 
     let source = new PMMC.Sources.FromString(`
-        :: HTML
-            : ---- "!!PUSHMARK!!" ;
-            : ==== BEGIN ~ OVER ---- == UNTIL SWAP DROP ;
+        : ---- "!!PUSHMARK!!" ;
+        : ==== BEGIN ~ OVER ---- == UNTIL SWAP DROP ;
 
-            : <html>   "<html>"  ; : </html>  "</html>"  ;
-            : <head>   "<head>"  ; : </head>  "</head>"  ;
-            : <body>   "<body>"  ; : </body>  "</body>"  ;
+        : <html>   "<html>"  ; : </html>  "</html>"  ;
+        : <head>   "<head>"  ; : </head>  "</head>"  ;
+        : <body>   "<body>"  ; : </body>  "</body>"  ;
 
-            : <title>  "<title>" ; : </title> "</title>" ;
-            : <title/> <title> SWAP </title> ;
+        : <title>  "<title>" ; : </title> "</title>" ;
+        : <title/> <title> SWAP </title> ;
 
-            : <h1> "<h1>" ; : </h1> "</h1>" ;
-            : <h1/> <h1> SWAP </h1> ;
+        : <h1> "<h1>" ; : </h1> "</h1>" ;
+        : <h1/> <h1> SWAP </h1> ;
 
-            : <ul> "<ul>" ; : </ul> "</ul>" ;
-            : <li> "<li>" ; : </li> "</li>" ;
-            : <li/> <li> SWAP </li> ;
-        ;;
+        : <ul> "<ul>" ; : </ul> "</ul>" ;
+        : <li> "<li>" ; : </li> "</li>" ;
+        : <li/> <li> SWAP </li> ;
 
         ----
         <html>

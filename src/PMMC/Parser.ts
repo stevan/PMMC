@@ -24,6 +24,9 @@ export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
             case Types.TokenType.BOOLEAN:
                 yield { type : 'CONST', token : token, literal : new Literals.Bool(token.source == '#t' ? true : false) };
                 break;
+            case Types.TokenType.SYMBOL:
+                yield { type : 'CONST', token : token, literal : new Literals.Symbol(token.source) };
+                break;
             case Types.TokenType.WORD:
                 switch (token.source) {
                 // -------------------------------------------------------------
@@ -48,6 +51,10 @@ export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
                 // -------------------------------------------------------------
                 case '[':
                     yield { type : 'BLOCK_BEGIN', token : token };
+                    break;
+
+                case ']':
+                    yield { type : 'BLOCK_END', token : token };
                     break;
 
                 case ']+':

@@ -7,6 +7,14 @@ export namespace Literals {
     // Scalars
     // -------------------------------------------------------------------------
 
+    // export class Void implements Types.Literal {
+    //     constructor() {}
+    //     toNum    () : number  { throw new Error("Cannot convert void to number") }
+    //     toBool   () : boolean { return false }
+    //     toStr    () : string  { return "()" }
+    //     toNative () : any { return undefined }
+    // }
+
     export class Bool implements Types.Literal {
         constructor(public value : boolean) {}
         toNum    () : number  { return this.value ? 1 : 0 }
@@ -47,11 +55,19 @@ export namespace Literals {
         toNative () : any { return this.value }
     }
 
+    export class Symbol implements Types.Literal {
+        constructor(public value : string) {}
+        toNum    () : number  { throw new Error("Cannot convert Symbol to number") }
+        toBool   () : boolean { return !! this.value }
+        toStr    () : string  { return this.value }
+        toNative () : any { return this.value }
+    }
+
     export class Cell implements Types.Cell {
         constructor(public value : Types.Literal) {}
         toNum    () : number  { return this.value.toNum() }
         toBool   () : boolean { return this.value.toBool() }
-        toStr    () : string  { return this.value.toStr() }
+        toStr    () : string  { return `<${this.value.toStr()}>` }
         toNative () : any { return this.value.toNative() }
     }
 

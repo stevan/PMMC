@@ -99,6 +99,7 @@ export namespace Types {
         NUMBER  = 'NUMBER',
         STRING  = 'STRING',
         BOOLEAN = 'BOOLEAN',
+        SYMBOL  = 'SYMBOL',
         WORD    = 'WORD',
         COMMENT = 'COMMENT',
     }
@@ -118,6 +119,7 @@ export namespace Types {
     export type WordEnd    = { type : 'WORD_END',   token : Token }
 
     export type BlockBegin = { type : 'BLOCK_BEGIN', token : Token }
+    export type BlockEnd   = { type : 'BLOCK_END' ,  token : Token }
     export type BlockExec  = { type : 'BLOCK_EXEC',  token : Token }
     export type BlockCond  = { type : 'BLOCK_COND',  token : Token }
     export type BlockLoop  = { type : 'BLOCK_LOOP',  token : Token }
@@ -136,6 +138,7 @@ export namespace Types {
         | WordBegin
         | WordEnd
         | BlockBegin
+        | BlockEnd
         | BlockExec
         | BlockCond
         | BlockLoop

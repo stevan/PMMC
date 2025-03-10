@@ -67,7 +67,7 @@ export namespace Dictionary {
         currentWord     () : UserWord { return this.current as UserWord }
         exitCurrentWord () : void { this.current = undefined }
 
-        bind (e : NativeWord) : void {
+        bind (e : Word) : void {
             this.entries.set(e.name, e);
         }
 

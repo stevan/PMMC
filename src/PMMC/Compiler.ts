@@ -30,6 +30,7 @@ export class Compiler implements Types.Flow<Types.Parsed, Types.Compiled> {
             case 'BLOCK_COND':
             case 'BLOCK_LOOP':
             case 'BLOCK_EXEC':
+            case 'BLOCK_END':
                 let blockTape = tape_stack.shift() as Tapes.BlockTape;
                 if (!blockTape)
                     throw new Error("Expected block tape on the stack and got nothing!");
@@ -43,6 +44,9 @@ export class Compiler implements Types.Flow<Types.Parsed, Types.Compiled> {
                 }
                 else if (parsed.type == 'BLOCK_EXEC') {
                     blockType = 'DO';
+                }
+                else if (parsed.type == 'BLOCK_END') {
+                    throw new Error("TODO!");
                 }
 
                 let block = {

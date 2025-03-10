@@ -6,8 +6,7 @@ async function Test012 () {
     dict.addVolume(PMMC.Images.createCoreVolume());
 
     let source = new PMMC.Sources.FromString(`
-        10 '$x' :=
-        $x >PUT
+        *x
     `);
 
     let tokenizer   = new PMMC.Tokenizer();

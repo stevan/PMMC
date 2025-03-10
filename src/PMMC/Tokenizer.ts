@@ -4,6 +4,7 @@ import { Types } from './Types';
 const IS_NUMBER   = /^-?[0-9][0-9_]*$/;
 const IS_STRING   = /^"[^"]*"|'[^']*'$/;
 const IS_BOOLEAN  = /^#t|#f$/;
+const IS_SYMBOL   = /^\*\S+$/;
 const IS_WORD     = /^\S+$/;
 const IS_COMMENT  = /^\/\/\s.*\n$/;
 
@@ -35,6 +36,9 @@ export class Tokenizer implements Types.Flow<Types.SourceCode, Types.Token> {
                     break;
                 case IS_BOOLEAN.test(m):
                     yield { type : Types.TokenType.BOOLEAN, source : m };
+                    break;
+                case IS_SYMBOL.test(m):
+                    yield { type : Types.TokenType.SYMBOL, source : m };
                     break;
                 case IS_WORD.test(m):
                     yield { type : Types.TokenType.WORD, source : m };

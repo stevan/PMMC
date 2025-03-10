@@ -9,10 +9,16 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
     public stack   : Literals.Stack;
     public control : Literals.Stack;
 
+    private $output : Types.Literal[] = [];
+
     constructor (catalog : Dictionary.Catalog) {
         this.catalog = catalog;
         this.stack   = new Literals.Stack();
         this.control = new Literals.Stack();
+    }
+
+    put (...args : Types.Literal[]) : void {
+        this.$output.push(...args);
     }
 
     async *flow (source : Types.Stream<Types.Compiled>, callee : string = 'main') : Types.Stream<Types.OutputToken> {
@@ -27,6 +33,12 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
                 yield this.createOutputToken(Types.OutputHandle.INFO, [ `  CALL : ${word.name}` ]);
                 if (word.type == 'NATIVE') {
                     word.body(this);
+                    // NOTE:
+                    // we can only ever have output after a call to .say, so
+                    // we know this is the best place to call this ...
+                    if (this.$output.length) {
+                        yield this.createOutputToken(Types.OutputHandle.STDOUT, this.$output.splice(0));
+                    }
                 }
                 else {
                     yield* this.flow(word.body.flow(), word.name);

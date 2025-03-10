@@ -84,6 +84,8 @@ export namespace Images {
         // I/O
         // ---------------------------------------------------------------------
 
+        bindNativeWord('>PUT', (r:Types.Runtime) => r.put(r.stack.pop()));
+
         // ---------------------------------------------------------------------
         // Stack Ops
         // ---------------------------------------------------------------------
@@ -131,6 +133,10 @@ export namespace Images {
             r.stack.push(new Literals.Bool(!lhs.toBool()))
         });
 
+        bindNativeWord('!!', (r:Types.Runtime) => {
+            let lhs = r.stack.pop() as Types.Literal;
+            r.stack.push(new Literals.Bool(lhs.toBool()))
+        });
 
         // ---------------------------------------------------------------------
         // Strings

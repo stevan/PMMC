@@ -1,7 +1,7 @@
 
 import * as PMMC from '../../src/PMMC';
 
-async function Test009 () {
+async function Test010 () {
     let dict   = new PMMC.Dictionary.Catalog();
     dict.addVolume(PMMC.Images.createCoreVolume());
 
@@ -88,5 +88,5 @@ async function Test009 () {
                             source.flow())))));
 }
 
-Test009();
+Test010();
 

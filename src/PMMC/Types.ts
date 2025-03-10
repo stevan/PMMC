@@ -31,6 +31,9 @@ export namespace Types {
     export interface Runtime {
         stack   : Stack;
         control : Stack;
+        // I/O
+        put (...args : Literal[]) : void;
+        // get () : Literal;
     }
 
     // -------------------------------------------------------------------------

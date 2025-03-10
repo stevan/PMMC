@@ -28,7 +28,18 @@ export namespace Types {
         rrot () : void;
     }
 
+    export type Cell = Literal & {
+        value : Literal;
+    }
+
+    export interface Pad {
+        get   (name : string) : Literal;
+        set   (name : string, value : Cell) : void;
+        free  (name : string) : void;
+    }
+
     export interface Runtime {
+        pad     : Pad;
         stack   : Stack;
         control : Stack;
         // I/O

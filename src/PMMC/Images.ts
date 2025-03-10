@@ -81,6 +81,25 @@ export namespace Images {
         // =====================================================================
 
         // ---------------------------------------------------------------------
+        // Variables
+        // ---------------------------------------------------------------------
+
+        bindNativeWord(':=', (r:Types.Runtime) => {
+            let name  = r.stack.pop();
+            let value = r.stack.pop();
+            let ident = name.toStr()
+            r.pad.set(ident, new Literals.Cell(value));
+            vol.bind({
+                type : 'NATIVE',
+                name : ident,
+                body : (r:Types.Runtime) => {
+                    let x = r.pad.get(ident);
+                    r.stack.push(x);
+                }
+            })
+        });
+
+        // ---------------------------------------------------------------------
         // I/O
         // ---------------------------------------------------------------------
 

@@ -6,6 +6,7 @@ import { Dictionary } from './Dictionary';
 
 export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Types.OutputToken> {
     public catalog : Dictionary.Catalog;
+    public pad     : Literals.Pad;
     public stack   : Literals.Stack;
     public control : Literals.Stack;
 
@@ -13,6 +14,7 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
 
     constructor (catalog : Dictionary.Catalog) {
         this.catalog = catalog;
+        this.pad     = new Literals.Pad();
         this.stack   = new Literals.Stack();
         this.control = new Literals.Stack();
     }

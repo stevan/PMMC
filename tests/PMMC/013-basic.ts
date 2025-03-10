@@ -6,10 +6,8 @@ async function Test012 () {
     dict.addVolume(PMMC.Images.createCoreVolume());
 
     let source = new PMMC.Sources.FromString(`
-        "Hello" >PUT
-        // 10 $x :=   // $x is a constant (binding a word to current dictionary)
-        //    $x :=^  // freeing $x from the current dictionary
-
+        10 '$x' :=
+        $x >PUT
     `);
 
     let tokenizer   = new PMMC.Tokenizer();

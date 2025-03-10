@@ -47,9 +47,35 @@ export namespace Literals {
         toNative () : any { return this.value }
     }
 
+    export class Cell implements Types.Cell {
+        constructor(public value : Types.Literal) {}
+        toNum    () : number  { return this.value.toNum() }
+        toBool   () : boolean { return this.value.toBool() }
+        toStr    () : string  { return this.value.toStr() }
+        toNative () : any { return this.value.toNative() }
+    }
+
     // -------------------------------------------------------------------------
     // Containers
     // -------------------------------------------------------------------------
+
+    export class Pad implements Types.Literal, Types.Pad {
+        private $items : Map<string, Types.Literal>;
+
+        constructor() { this.$items = new Map<string, Types.Literal>() }
+        toNum    () : number  { throw new Error("TODO") }
+        toBool   () : boolean { throw new Error("TODO") }
+        toStr    () : string  { throw new Error("TODO") }
+        toNative () : any { return this.$items }
+
+        free (name : string) : void { this.$items.delete(name) }
+        set  (name : string, value : Types.Cell) : void { this.$items.set(name, value) }
+        get  (name : string) : Types.Cell {
+            let cell = this.$items.get(name);
+            if (!cell) throw new Error(`Cannot find ${name} cell`);
+            return cell as Types.Cell;
+        }
+    }
 
     export class Stack implements Types.Literal, Types.Stack {
         private $items : Types.Literal[];
@@ -108,6 +134,8 @@ export namespace Literals {
             || l instanceof Str
             //|| l instanceof Block
             || l instanceof Boxed
+            || l instanceof Cell
+            || l instanceof Pad
             || l instanceof Stack;
     }
 

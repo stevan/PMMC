@@ -1,9 +1,41 @@
 
 import * as readline from 'readline';
+import * as fs       from 'fs';
 
 import { Types } from './Types';
 
 export namespace Sources {
+
+    export class FromSources implements Types.Source<Types.SourceCode> {
+        private $sources : Types.Source<Types.SourceCode>[];
+
+        constructor (sources : Types.Source<Types.SourceCode>[]) {
+            this.$sources = sources;
+        }
+
+        async *flow () : Types.Stream<Types.SourceCode> {
+            for (const source of this.$sources) {
+                yield* source.flow();
+            }
+        }
+    }
+
+    export class FromFile implements Types.Source<Types.SourceCode> {
+        private $path : string;
+
+        constructor (path : string) {
+            this.$path = path;
+        }
+
+        async *flow () : Types.Stream<Types.SourceCode> {
+            yield new Promise<Types.SourceCode>((resolve) => {
+                fs.readFile(this.$path, 'utf8', (err, data) => {
+                    if (err) throw new Error(`Got error ${err}`);
+                    resolve(data);
+                });
+            })
+        }
+    }
 
     export class FromString implements Types.Source<Types.SourceCode> {
         private $source : Types.SourceCode;

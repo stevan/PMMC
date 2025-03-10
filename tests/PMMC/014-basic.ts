@@ -1,20 +1,16 @@
 
 import * as PMMC from '../../src/PMMC';
 
-async function Test013 () {
+async function Test014 () {
     let dict   = new PMMC.Dictionary.Catalog();
     dict.addVolume(PMMC.Images.createCoreVolume());
 
-    // symbol table manipulation
-    let source = new PMMC.Sources.FromString(`
-        [ 10 0 ] *{foo} :=
-
-        foo
-
-        [ 10000 100 ] *{foo} :=
-
-        foo
-    `);
+    let source = new PMMC.Sources.FromSources([
+        new PMMC.Sources.FromFile('./lib/Test.pmmc'),
+        new PMMC.Sources.FromString(`
+            "!" ~ >PUT
+        `)
+    ]);
 
     let tokenizer   = new PMMC.Tokenizer();
     let parser      = new PMMC.Parser();
@@ -30,5 +26,5 @@ async function Test013 () {
                             source.flow())))));
 }
 
-Test013();
+Test014();
 

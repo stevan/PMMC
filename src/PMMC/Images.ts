@@ -30,6 +30,14 @@ export namespace Images {
 
         // ---------------------------------------------------------------------
 
+        fromSources (sources : Types.Source<Types.SourceCode>[]) : Types.Source<Types.SourceCode> {
+            return new Sources.FromSources(sources)
+        }
+
+        fromFile (path : string) : Types.Source<Types.SourceCode> {
+            return new Sources.FromFile(path)
+        }
+
         fromString (src : Types.SourceCode) : Types.Source<Types.SourceCode> {
             return new Sources.FromString(src)
         }

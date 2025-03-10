@@ -6,17 +6,35 @@ async function Test009 () {
     dict.addVolume(PMMC.Images.createCoreVolume());
 
     let source = new PMMC.Sources.FromString(`
+        // ---------------------------------------------------------------------
+        //
+        // ---------------------------------------------------------------------
+
         : EGGSIZE // ( n -- )
-            [
-                DUP 18 < [  "reject"      ]? @^
-                DUP 21 < [  "small"       ]? @^
-                DUP 24 < [  "medium"      ]? @^
-                DUP 27 < [  "large"       ]? @^
-                DUP 30 < [  "extra large" ]? @^
+            BEGIN
+                DUP 18 < IF "reject"      THEN/BREAK
+                DUP 21 < IF "small"       THEN/BREAK
+                DUP 24 < IF "medium"      THEN/BREAK
+                DUP 27 < IF "large"       THEN/BREAK
+                DUP 30 < IF "extra large" THEN/BREAK
                             "error"
-            ]+
+            END
         ;
 
+        // : EGGSIZE // ( n -- )
+        //     [
+        //         DUP 18 < [  "reject"      ]? [^]
+        //         DUP 21 < [  "small"       ]? [^]
+        //         DUP 24 < [  "medium"      ]? [^]
+        //         DUP 27 < [  "large"       ]? [^]
+        //         DUP 30 < [  "extra large" ]? [^]
+        //                     "error"
+        //     ]+
+        // ;
+
+        // ---------------------------------------------------------------------
+        // Decompiled IF/THEN/ELSE
+        // ---------------------------------------------------------------------
         // : EGGSIZE // ( n -- )
         //         DUP 18 < [  "reject"      ]? ! [
         //             DUP 21 < [  "small"       ]? ! [
@@ -29,6 +47,9 @@ async function Test009 () {
         //         ]? DROP
         // ;
 
+        // ---------------------------------------------------------------------
+        // IF/THEN/ELSE version
+        // ---------------------------------------------------------------------
         // : EGGSIZE
         //        DUP 18 < IF  "reject"      ELSE
         //        DUP 21 < IF  "small"       ELSE
@@ -44,6 +65,7 @@ async function Test009 () {
         25  EGGSIZE
         29  EGGSIZE
         31  EGGSIZE
+
     `);
 
     let tokenizer   = new PMMC.Tokenizer();
@@ -52,17 +74,11 @@ async function Test009 () {
     let interpreter = new PMMC.Interpreter(dict);
     let output      = new PMMC.Sinks.Console();
 
+    console.log('----------------------------');
     for await (const input of compiler.flow(parser.flow(tokenizer.flow(source.flow())))) {
         console.log("GOT", input);
     }
     console.log('----------------------------');
-
-    // console.log(
-    //     (((dict.lookup('EGGSIZE')?.body as PMMC.Tapes.CompiledTape)
-    //         .compiled[0] as PMMC.Types.Loop)
-    //             .tape as PMMC.Tapes.CompiledTape)
-    //                 .compiled
-    // );
 
     await output.flow(
             interpreter.flow(

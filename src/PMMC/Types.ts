@@ -145,6 +145,7 @@ export namespace Types {
         | Goto
         | Loop
         | Cond
+        | Do
         | Push
         | Execute
         | TODO

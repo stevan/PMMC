@@ -62,16 +62,17 @@ export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
                     yield { type : 'BLOCK_LOOP', token : token };
                     break;
 
-                case '@+':
+                case '[+]':
                     yield { type : 'BLOCK_NEXT', token : token };
                     break;
 
-                case '@^':
+                case '[^]':
                     yield { type : 'BLOCK_LAST', token : token };
                     break;
                 // -------------------------------------------------------------
                 // control structures
                 // -------------------------------------------------------------
+
                 case 'IF':
                     yield { type : 'BLOCK_BEGIN', token : token };
                     break;
@@ -85,8 +86,23 @@ export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
                     yield { type : 'CALL', token : { type : Types.TokenType.WORD, source : 'DROP'} };
                     break;
 
+                case 'CASE':
+                    yield { type : 'BLOCK_BEGIN', token : token };
+                    break;
+                case 'THEN/BREAK':
+                    yield { type : 'BLOCK_COND', token : token };
+                    yield { type : 'BLOCK_LAST', token : token };
+                    break;
+                case 'THEN/NEXT':
+                    yield { type : 'BLOCK_COND', token : token };
+                    yield { type : 'BLOCK_NEXT', token : token };
+                    break;
+
                 case 'BEGIN':
                     yield { type : 'BLOCK_BEGIN', token : token };
+                    break;
+                case 'END':
+                    yield { type : 'BLOCK_EXEC', token : token };
                     break;
                 case 'WHILE':
                     yield { type : 'BLOCK_BEGIN', token : token };

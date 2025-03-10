@@ -5,6 +5,14 @@ export namespace Types {
     // Common Types
     // -------------------------------------------------------------------------
 
+    export enum LiteralType {
+        Bool  = 'Bool',
+        Num   = 'Num',
+        Str   = 'Str',
+        Sym   = 'Sym',
+        Block = 'Block',
+    }
+
     export interface Literal {
         toNum    () : number;
         toBool   () : boolean;
@@ -126,7 +134,7 @@ export namespace Types {
     export type BlockNext  = { type : 'BLOCK_NEXT',  token : Token }
     export type BlockLast  = { type : 'BLOCK_LAST',  token : Token }
 
-    export type Const   = { type : 'CONST',   token : Token, literal : Literal }
+    export type Const   = { type : 'CONST',   token : Token, literalType : LiteralType }
     export type Call    = { type : 'CALL',    token : Token }
 
     export type BlockControl = BlockNext | BlockLast
@@ -154,7 +162,7 @@ export namespace Types {
     export type Loop    = { type : 'LOOP',    parsed : BlockLoop,    tape : Tape<Compiled> };
     export type Cond    = { type : 'COND',    parsed : BlockCond,    tape : Tape<Compiled> };
     export type Do      = { type : 'DO',      parsed : BlockExec,    tape : Tape<Compiled> };
-    export type Push    = { type : 'PUSH',    parsed : Const }; // << move the `literal` here instead
+    export type Push    = { type : 'PUSH',    parsed : Const | BlockEnd, literal : Literal };
     export type Execute = { type : 'EXECUTE', parsed : Call  };
     export type TODO    = { type : 'TODO',    parsed : Parsed };
 

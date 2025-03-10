@@ -6,7 +6,13 @@ async function Test012 () {
     dict.addVolume(PMMC.Images.createCoreVolume());
 
     let source = new PMMC.Sources.FromString(`
-        *x
+        [ 10 0 ] *foo :=
+
+        foo
+
+        [ 10000 100 ] *foo :=
+
+        foo
     `);
 
     let tokenizer   = new PMMC.Tokenizer();

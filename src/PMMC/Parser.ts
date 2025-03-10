@@ -1,6 +1,5 @@
 
 import { Types }    from './Types';
-import { Literals } from './Literals';
 
 export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
 
@@ -16,16 +15,16 @@ export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
         for await (const token of source) {
             switch (token.type) {
             case Types.TokenType.STRING:
-                yield { type : 'CONST', token : token, literal : new Literals.Str(token.source) };
+                yield { type : 'CONST', token : token, literalType : Types.LiteralType.Str };
                 break;
             case Types.TokenType.NUMBER:
-                yield { type : 'CONST', token : token, literal : new Literals.Num(parseInt(token.source)) };
+                yield { type : 'CONST', token : token, literalType : Types.LiteralType.Num };
                 break;
             case Types.TokenType.BOOLEAN:
-                yield { type : 'CONST', token : token, literal : new Literals.Bool(token.source == '#t' ? true : false) };
+                yield { type : 'CONST', token : token, literalType : Types.LiteralType.Bool };
                 break;
             case Types.TokenType.SYMBOL:
-                yield { type : 'CONST', token : token, literal : new Literals.Symbol(token.source) };
+                yield { type : 'CONST', token : token, literalType : Types.LiteralType.Sym };
                 break;
             case Types.TokenType.WORD:
                 switch (token.source) {
@@ -126,7 +125,7 @@ export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
                     yield { type : 'CALL',        token : { type : Types.TokenType.WORD, source : 'SWAP'} };
                     yield { type : 'BLOCK_BEGIN', token : token };
                     yield { type : 'CALL',        token : { type : Types.TokenType.WORD,   source : '>R' } };
-                    yield { type : 'CONST',       token : { type : Types.TokenType.NUMBER, source : '1' }, literal : new Literals.Num(1) };
+                    yield { type : 'CONST',       token : { type : Types.TokenType.NUMBER, source : '1' }, literalType : Types.LiteralType.Num };
                     yield { type : 'CALL',        token : { type : Types.TokenType.WORD,   source : '+' } };
                     yield { type : 'CALL',        token : { type : Types.TokenType.WORD,   source : '>R' } };
                     break;

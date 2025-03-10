@@ -1,6 +1,7 @@
 
 import { Types }      from './Types';
 import { Tapes }      from './Tapes';
+import { Literals }   from './Literals';
 import { Dictionary } from './Dictionary';
 
 export class Compiler implements Types.Flow<Types.Parsed, Types.Compiled> {
@@ -35,25 +36,26 @@ export class Compiler implements Types.Flow<Types.Parsed, Types.Compiled> {
                 if (!blockTape)
                     throw new Error("Expected block tape on the stack and got nothing!");
 
-                let blockType : string = '';
-                if (parsed.type == 'BLOCK_COND') {
-                    blockType = 'COND';
+                let block : Types.Compiled;
+                if (parsed.type == 'BLOCK_END') {
+                    block = {
+                        type    : 'PUSH',
+                        parsed  : parsed,
+                        literal : new Literals.Block(blockTape)
+                    };
+                }
+                else if (parsed.type == 'BLOCK_COND') {
+                    block = { type : 'COND', tape : blockTape, parsed : parsed };
                 }
                 else if (parsed.type == 'BLOCK_LOOP') {
-                    blockType = 'LOOP';
+                    block = { type : 'LOOP', tape : blockTape, parsed : parsed };
                 }
                 else if (parsed.type == 'BLOCK_EXEC') {
-                    blockType = 'DO';
+                    block = { type : 'DO', tape : blockTape, parsed : parsed };
                 }
-                else if (parsed.type == 'BLOCK_END') {
-                    throw new Error("TODO!");
+                else {
+                    throw new Error("WTF");
                 }
-
-                let block = {
-                    type   : blockType,
-                    tape   : blockTape,
-                    parsed : parsed,
-                } as Types.Compiled;
 
                 if (tape_stack.length > 0) {
                     let tape = tape_stack[0] as Types.Tape<Types.Compiled>;
@@ -84,10 +86,33 @@ export class Compiler implements Types.Flow<Types.Parsed, Types.Compiled> {
                 break;
             case 'CALL':
             case 'CONST':
-                let exec = {
-                    type   : (parsed.type == 'CALL' ? 'EXECUTE' : 'PUSH'),
-                    parsed : parsed,
-                } as Types.Compiled;
+                let exec : Types.Compiled;
+                if (parsed.type == 'CALL') {
+                    exec = {
+                        type   : 'EXECUTE',
+                        parsed : parsed,
+                    };
+                }
+                else if (parsed.type == 'CONST') {
+                    let lit : Types.Literal;
+                    switch (true) {
+                        case ( parsed.literalType == Types.LiteralType.Bool ) : lit = new Literals.Bool(parsed.token.source == '#t' ? true : false); break;
+                        case ( parsed.literalType == Types.LiteralType.Num  ) : lit = new Literals.Num(parseInt(parsed.token.source)); break;
+                        case ( parsed.literalType == Types.LiteralType.Str  ) : lit = new Literals.Str(parsed.token.source); break;
+                        case ( parsed.literalType == Types.LiteralType.Sym  ) : lit = new Literals.Sym(parsed.token.source); break;
+                        default:
+                            throw new Error(`Unhandled literal type ${parsed.literalType}`);
+                    }
+
+                    exec = {
+                        type    : 'PUSH',
+                        parsed  : parsed,
+                        literal : lit
+                    };
+                }
+                else {
+                    throw new Error("WTF");
+                }
 
                 if (tape_stack.length > 0) {
                     let tape = tape_stack[0] as Types.Tape<Types.Compiled>;

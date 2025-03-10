@@ -90,7 +90,7 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
                 break;
             case 'PUSH':
                 yield this.createOutputToken(Types.OutputHandle.INFO, [ `   PUSH | ${compiled.parsed.token.source}` ]);
-                this.stack.push(compiled.parsed.literal)
+                this.stack.push(compiled.literal)
                 break;
             case 'TODO':
                 yield this.createOutputToken(Types.OutputHandle.WARN, [ "TODO", compiled ]);

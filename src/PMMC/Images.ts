@@ -85,12 +85,11 @@ export namespace Images {
         // ---------------------------------------------------------------------
 
         bindNativeWord(':=', (r:Types.Runtime) => {
-            let symbol = r.stack.pop() as Literals.Symbol;
+            let symbol = r.stack.pop() as Literals.Sym;
             let block  = r.stack.pop() as Literals.Block;
-            let name   = symbol.toNative();
             vol.bind({
                 type : 'USER',
-                name : name,
+                name : symbol.toName(),
                 body : block.tape
             });
         });

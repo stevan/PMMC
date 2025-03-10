@@ -23,11 +23,11 @@ async function Test009 () {
 
         // : EGGSIZE // ( n -- )
         //     [
-        //         DUP 18 < [  "reject"      ]? [^]
-        //         DUP 21 < [  "small"       ]? [^]
-        //         DUP 24 < [  "medium"      ]? [^]
-        //         DUP 27 < [  "large"       ]? [^]
-        //         DUP 30 < [  "extra large" ]? [^]
+        //         DUP 18 < [  "reject"      ]? [^]?
+        //         DUP 21 < [  "small"       ]? [^]?
+        //         DUP 24 < [  "medium"      ]? [^]?
+        //         DUP 27 < [  "large"       ]? [^]?
+        //         DUP 30 < [  "extra large" ]? [^]?
         //                     "error"
         //     ]+
         // ;

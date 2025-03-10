@@ -62,11 +62,11 @@ export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
                     yield { type : 'BLOCK_LOOP', token : token };
                     break;
 
-                case '[+]':
+                case '[+]?':
                     yield { type : 'BLOCK_NEXT', token : token };
                     break;
 
-                case '[^]':
+                case '[^]?':
                     yield { type : 'BLOCK_LAST', token : token };
                     break;
                 // -------------------------------------------------------------

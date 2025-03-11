@@ -11,21 +11,25 @@ export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
         })
     }
 
+    private createConstToken (token : Types.Token) : Types.Const {
+        console.log("CREATE", token);
+        switch (token.type) {
+        case Types.TokenType.STRING:
+            return { type : 'CONST', token : token, literalType : Types.LiteralType.Str };
+        case Types.TokenType.NUMBER:
+            return { type : 'CONST', token : token, literalType : Types.LiteralType.Num };
+        case Types.TokenType.BOOLEAN:
+            return { type : 'CONST', token : token, literalType : Types.LiteralType.Bool };
+        case Types.TokenType.SYMBOL:
+            return { type : 'CONST', token : token, literalType : Types.LiteralType.Sym };
+        default:
+            throw new Error(`Expected const token type, not ${token.type}`);
+        }
+    }
+
     async *flow (source : Types.Stream<Types.Token>) : Types.Stream<Types.Parsed> {
         for await (const token of source) {
             switch (token.type) {
-            case Types.TokenType.STRING:
-                yield { type : 'CONST', token : token, literalType : Types.LiteralType.Str };
-                break;
-            case Types.TokenType.NUMBER:
-                yield { type : 'CONST', token : token, literalType : Types.LiteralType.Num };
-                break;
-            case Types.TokenType.BOOLEAN:
-                yield { type : 'CONST', token : token, literalType : Types.LiteralType.Bool };
-                break;
-            case Types.TokenType.SYMBOL:
-                yield { type : 'CONST', token : token, literalType : Types.LiteralType.Sym };
-                break;
             case Types.TokenType.WORD:
                 switch (token.source) {
                 // -------------------------------------------------------------
@@ -149,6 +153,12 @@ export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
                 default:
                     yield { type : 'CALL', token : token };
                 }
+                break;
+            case Types.TokenType.STRING:
+            case Types.TokenType.NUMBER:
+            case Types.TokenType.BOOLEAN:
+            case Types.TokenType.SYMBOL:
+                yield this.createConstToken(token);
                 break;
             case Types.TokenType.COMMENT:
                 break;

@@ -8,7 +8,7 @@ async function Test014 () {
     let source = new PMMC.Sources.FromSources([
         new PMMC.Sources.FromFile('./lib/Test.pmmc'),
         new PMMC.Sources.FromString(`
-            Test::hello >PUT
+            Test::hello >PUT!
         `)
     ]);
 

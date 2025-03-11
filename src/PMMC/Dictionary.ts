@@ -22,7 +22,12 @@ export namespace Dictionary {
             this.imports = new Array<Volume>();
         }
 
-        import (vol : Volume) : void { this.imports.push(vol) }
+        importVolume (name : string) : void {
+            let vol = this.shelf.get(name);
+            if (!vol)
+                throw new Error(`Unable to find module(${name}) to import`);
+            this.imports.push(vol);
+        }
 
         addVolume (vol : Volume) : void { this.shelf.set(vol.name, vol) }
 

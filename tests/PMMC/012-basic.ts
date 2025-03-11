@@ -25,7 +25,7 @@ async function Test012 () {
         : <li/> <li> SWAP </li> ;
         ;;
     `+
-    "``HTML >IMPORT!"
+    " `HTML >IMPORT! "
     +`
         ----
         <html>

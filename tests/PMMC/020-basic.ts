@@ -1,21 +1,16 @@
 
 import * as PMMC from '../../src/PMMC';
 
-async function Test014 () {
+async function Test020 () {
     let dict   = new PMMC.Dictionary.Catalog();
     PMMC.Images.createCoreVolume(dict);
 
-    let source = new PMMC.Sources.FromString(`
-        : /reduce
-            0 DO
-                ROT SWAP RDUP >[+]
-            LOOP
-            SWAP DROP
-        ;
-
-        [ 4 3 2 1 ] >[+]
-        [ + ] 0 4 /reduce
-    `);
+    let source = new PMMC.Sources.FromSources([
+        new PMMC.Sources.FromFile('./lib/Test.pmmc'),
+        new PMMC.Sources.FromString(`
+            Test::hello >PUT!
+        `)
+    ]);
 
     let tokenizer   = new PMMC.Tokenizer();
     let parser      = new PMMC.Parser();
@@ -31,5 +26,5 @@ async function Test014 () {
                             source.flow())))));
 }
 
-Test014();
+Test020();
 

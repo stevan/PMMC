@@ -126,13 +126,14 @@ export namespace Types {
     export type WordBegin  = { type : 'WORD_BEGIN', token : Token, ident : Identifier  }
     export type WordEnd    = { type : 'WORD_END',   token : Token }
 
-    export type BlockBegin = { type : 'BLOCK_BEGIN', token : Token }
-    export type BlockEnd   = { type : 'BLOCK_END' ,  token : Token }
-    export type BlockExec  = { type : 'BLOCK_EXEC',  token : Token }
-    export type BlockCond  = { type : 'BLOCK_COND',  token : Token }
-    export type BlockLoop  = { type : 'BLOCK_LOOP',  token : Token }
-    export type BlockNext  = { type : 'BLOCK_NEXT',  token : Token }
-    export type BlockLast  = { type : 'BLOCK_LAST',  token : Token }
+    export type BlockBegin  = { type : 'BLOCK_BEGIN',  token : Token }
+    export type BlockEnd    = { type : 'BLOCK_END',    token : Token }
+    export type BlockInvoke = { type : 'BLOCK_INVOKE', token : Token }
+    export type BlockExec   = { type : 'BLOCK_EXEC',   token : Token }
+    export type BlockCond   = { type : 'BLOCK_COND',   token : Token }
+    export type BlockLoop   = { type : 'BLOCK_LOOP',   token : Token }
+    export type BlockNext   = { type : 'BLOCK_NEXT',   token : Token }
+    export type BlockLast   = { type : 'BLOCK_LAST',   token : Token }
 
     export type Const   = { type : 'CONST',   token : Token, literalType : LiteralType }
     export type Call    = { type : 'CALL',    token : Token }
@@ -147,6 +148,7 @@ export namespace Types {
         | WordEnd
         | BlockBegin
         | BlockEnd
+        | BlockInvoke
         | BlockExec
         | BlockCond
         | BlockLoop
@@ -163,7 +165,7 @@ export namespace Types {
     export type Cond    = { type : 'COND',    parsed : BlockCond,    tape : Tape<Compiled> };
     export type Do      = { type : 'DO',      parsed : BlockExec,    tape : Tape<Compiled> };
     export type Push    = { type : 'PUSH',    parsed : Const | BlockEnd, literal : Literal };
-    export type Execute = { type : 'EXECUTE', parsed : Call  };
+    export type Execute = { type : 'EXECUTE', parsed : Call  | BlockInvoke };
     export type TODO    = { type : 'TODO',    parsed : Parsed };
 
     export type Compiled =

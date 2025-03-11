@@ -1,20 +1,19 @@
 
 import * as PMMC from '../../src/PMMC';
 
-async function Test014 () {
+async function Test015 () {
     let dict   = new PMMC.Dictionary.Catalog();
     PMMC.Images.createCoreVolume(dict);
 
-    let source = new PMMC.Sources.FromString(`
-        : /reduce
-            0 DO
-                ROT SWAP RDUP >[+]
-            LOOP
-            SWAP DROP
-        ;
+    let source = new PMMC.Sources.FromString(
+    " 10 >CELL `foo := "+ // create the cell called foo
+    `
+        foo DUP >PUT!               // print it
+        DUP 5 * >CELL!              // operate and store the result
+        foo >PUT!                   // print it again (value is updated)
 
-        [ 4 3 2 1 ] >[+]
-        [ + ] 0 4 /reduce
+        foo 10 + >PUT!              // access, operate, and print
+        foo >PUT!                   // print it (it is unchanged)
     `);
 
     let tokenizer   = new PMMC.Tokenizer();
@@ -31,5 +30,5 @@ async function Test014 () {
                             source.flow())))));
 }
 
-Test014();
+Test015();
 

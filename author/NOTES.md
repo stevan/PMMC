@@ -77,11 +77,13 @@ In addition to this prefix convention, we also also use an optional post-fix
 convention to indicate a word's behavior.
 ```
 ?     indicates that the operation is conditional
-!     indicates that the operation is "dangerous" (i.e. - touches outside stuff)
+!     indicates that the operation is side effectual (I/O, etc.)
 ```
 
 > A good example of this is the I/O operation `>PUT!` is a request 
-> to send data to the outside world, so marked with `!`.
+> to send data to the outside world, so marked with `!`. Or the 
+> conditional block constructor `]?` which will execute the block based 
+> the boolean on the TOS. 
 
 <!----------------------------------------------------------------------------->
 ## Platform Builtins
@@ -149,11 +151,6 @@ convention to indicate a word's behavior.
 ## Word Builtins
 <!----------------------------------------------------------------------------->
 
-### Invocation
-```
-    >INVOKE     executes the block on the TOS  
-```
-
 ### Word Binding/Unbinding
 ```
     [ "FOO" ] `foo :=     // bind the `foo symbol to this block
@@ -166,7 +163,7 @@ convention to indicate a word's behavior.
 
 ### Importing
 ```
-    `MyModuleName >IMPORT!   // given a symbol, import it as a module
+    `MyModuleName >IMPORT   // given a symbol, import it as a module
 ```
 
 <!----------------------------------------------------------------------------->
@@ -177,13 +174,19 @@ convention to indicate a word's behavior.
 ```
 [          // start block and collect up until end token
   <block>
-]          // put this block on the TOS, do not run it
+]          // put this block on the TOS, does not run it
 ]+         // run block once, iteration can be controlled with NEXT and LAST operations
 ]?         // pop TOS, if true, run this block, put old TOS back on TOS
 ]@?        // always run once, then if TOS if true, re-run/loop this block
 ```
 
-### Block Iteration
+> NOTE: the sigils are post-fixed to the closing block constructors, this is 
+> on purpose to indicate what will happen with the block.
+
+### Block Iteration 
+
+These always operate within a block, and affect that enclosing block. 
+
 ```
 [+]?       // NEXT - will reset the instr-counter to 0 in the enclosing block
 [^]?       // LAST - set the instr-counter to the end in the enclosing block
@@ -199,8 +202,17 @@ Some things to keep in mind about block iteration.
         - `]+` will always run once so are best for this
         - `]?` can also be used, but probably not a good idea
         - `]` can be used, but must be explicity run
-        - `]@?` already loop, so not relevant here
-    
+        - `]@?` already loop, so not relevant here 
+
+### Block Control
+
+These only operate on blocks on the TOS, so only `]` is supportted as all the 
+other block creators will immediately run the block. 
+
+```
+>[+]      // run the block at TOS once (dead-duck operator)
+```
+
 <!----------------------------------------------------------------------------->
 ## Control Structures
 <!----------------------------------------------------------------------------->
@@ -210,6 +222,19 @@ Some things to keep in mind about block iteration.
     <bool> IF <body*> THEN                 if statement
     <bool> IF <body*> ELSE <body*> THEN    if else statement
 ```
+
+```
+    BEGIN                                  This is a switch/case style statement
+        <bool> IF <body*> THEN/BREAK       THEN/BREAK will leave the loop iff 
+        <bool> IF <body*> THEN/BREAK       the IF condition is successful, 
+        <bool> IF <body*> THEN/BREAK       otherwise it will continue to the 
+        <bool> IF <body*> THEN/BREAK       next condition until it they are 
+        <bool> IF <body*> THEN/BREAK       exhausted, at which point the 
+                  <default>                "default" code is executed if none of
+    END                                    the conditions succeeded.
+```
+> NOTE: the switch/case can be improved, it's kinda fugly now, but I didn't 
+> want to add too many more keywords. 
 
 ## Conditional Loops
 ```
@@ -221,3 +246,4 @@ Some things to keep in mind about block iteration.
 ```
     <end> <start> DO <body*> LOOP          loops from <start> to <end> and executes the <body*>
 ```
+

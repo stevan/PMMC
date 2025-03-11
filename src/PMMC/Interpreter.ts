@@ -26,26 +26,45 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
     }
 
     async *flow (source : Types.Stream<Types.Compiled>, callee : string = 'main') : Types.Stream<Types.OutputToken> {
-        yield this.createOutputToken(Types.OutputHandle.INFO, [ `ENTER => ${callee}` ]);
+        yield this.createOutputToken(Types.OutputHandle.INFO, [ `ENTER   > ${callee}` ]);
         for await (const compiled of source) {
             let beforeStack   = this.stack.copyStack();
             let beforeControl = this.control.copyStack();
             switch (compiled.type) {
             case 'EXECUTE':
-                let word = this.catalog.lookup(compiled.parsed.token.source);
-                if (!word) throw new Error(`Could not find word ${compiled.parsed.token.source}`)
-                yield this.createOutputToken(Types.OutputHandle.INFO, [ `  CALL : ${word.name}` ]);
-                if (word.type == 'NATIVE') {
-                    word.body(this);
-                    // NOTE:
-                    // we can only ever have output after a call to .say, so
-                    // we know this is the best place to call this ...
-                    if (this.$output.length) {
-                        yield this.createOutputToken(Types.OutputHandle.STDOUT, this.$output.splice(0));
+                if (compiled.parsed.type == 'CALL') {
+                    let word = this.catalog.lookup(compiled.parsed.token.source);
+                    if (!word)
+                        throw new Error(`Could not find word ${compiled.parsed.token.source}`);
+
+                    yield this.createOutputToken(Types.OutputHandle.INFO, [ `   CALL │ ${word.name}` ]);
+
+                    if (word.type == 'NATIVE') {
+                        word.body(this);
+                        // NOTE:
+                        // we can only ever have output after a call to .say, so
+                        // we know this is the best place to call this ...
+                        if (this.$output.length) {
+                            yield this.createOutputToken(Types.OutputHandle.STDOUT, this.$output.splice(0));
+                        }
+                    }
+                    else if (word.type == 'CONST') {
+                        yield this.createOutputToken(Types.OutputHandle.INFO, [ `  CONST │ ${compiled.parsed.token.source}` ]);
+                        this.stack.push(word.const);
+                    }
+                    else if (word.type == 'CELL') {
+                        yield this.createOutputToken(Types.OutputHandle.INFO, [ `   CELL │ ${compiled.parsed.token.source}` ]);
+                        this.stack.push(word.cell);
+                    }
+                    else {
+                        yield* this.flow(word.body.flow(), word.name);
                     }
                 }
-                else {
-                    yield* this.flow(word.body.flow(), word.name);
+                else if (compiled.parsed.type == 'BLOCK_INVOKE') {
+                    let block = this.stack.pop() as Literals.Block;
+                    Literals.assertBlock(block);
+                    yield this.createOutputToken(Types.OutputHandle.INFO, [ `INVOKE !` ]);
+                    yield* this.flow(block.tape.flow(), 'INVOKE!');
                 }
                 break;
             case 'GOTO':
@@ -86,22 +105,22 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
                 yield this.createOutputToken(Types.OutputHandle.INFO, [ ` -LOOP @` ]);
                 break;
             case 'DO':
-                yield this.createOutputToken(Types.OutputHandle.INFO, [ `   +DO |` ]);
+                yield this.createOutputToken(Types.OutputHandle.INFO, [ `   +DO │` ]);
                 yield* this.flow(compiled.tape.flow(), 'DO');
-                yield this.createOutputToken(Types.OutputHandle.INFO, [ `   -DO |` ]);
+                yield this.createOutputToken(Types.OutputHandle.INFO, [ `   -DO │` ]);
                 break;
             case 'PUSH':
-                yield this.createOutputToken(Types.OutputHandle.INFO, [ `   PUSH | ${compiled.parsed.token.source}` ]);
+                yield this.createOutputToken(Types.OutputHandle.INFO, [ `   PUSH │ ${compiled.parsed.token.source}` ]);
                 this.stack.push(compiled.literal)
                 break;
             case 'TODO':
                 yield this.createOutputToken(Types.OutputHandle.WARN, [ "TODO", compiled ]);
                 break;
             }
-            yield this.createOutputToken(Types.OutputHandle.DEBUG, [ " stck[] :", beforeStack,   "--", this.stack   ]);
-            yield this.createOutputToken(Types.OutputHandle.DEBUG, [ " ctrl[] :", beforeControl, "--", this.control ]);
+            yield this.createOutputToken(Types.OutputHandle.DEBUG, [ " stck[]:│", beforeStack,   "╌", this.stack   ]);
+            yield this.createOutputToken(Types.OutputHandle.DEBUG, [ " ctrl[]:│", beforeControl, "╌", this.control ]);
         }
-        yield this.createOutputToken(Types.OutputHandle.INFO, [ "EXIT   ^", this.stack ]);
+        yield this.createOutputToken(Types.OutputHandle.INFO, [ "EXIT    ^", this.stack ]);
     }
 
     private createOutputToken (fh : Types.OutputHandle, args : any[]) : Types.OutputToken {

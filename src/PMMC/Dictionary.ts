@@ -6,10 +6,12 @@ export namespace Dictionary {
     export type UserWordBody   = Types.Tape<Types.Compiled>;
     export type NativeWordBody = (runtime : Types.Runtime) => void;
 
-    export type UserWord   = { type : 'USER',   name : string, body : UserWordBody }
-    export type NativeWord = { type : 'NATIVE', name : string, body : NativeWordBody }
+    export type UserWord   = { type : 'USER',   name : string, body  : UserWordBody   }
+    export type UserConst  = { type : 'CONST',  name : string, const : Types.Literal  }
+    export type UserCell   = { type : 'CELL',   name : string, cell  : Types.Cell     }
+    export type NativeWord = { type : 'NATIVE', name : string, body  : NativeWordBody }
 
-    export type Word = UserWord | NativeWord;
+    export type Word = UserWord | NativeWord | UserCell | UserConst;
 
     export class Catalog {
         public shelf   : Map<string, Volume>;

@@ -91,10 +91,11 @@ export class Compiler implements Types.Flow<Types.Parsed, Types.Compiled> {
                 }
 
                 break;
+            case 'BLOCK_INVOKE':
             case 'CALL':
             case 'CONST':
                 let exec : Types.Compiled;
-                if (parsed.type == 'CALL') {
+                if (parsed.type == 'CALL' || parsed.type == 'BLOCK_INVOKE') {
                     exec = {
                         type   : 'EXECUTE',
                         parsed : parsed,

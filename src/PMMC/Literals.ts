@@ -11,7 +11,7 @@ export namespace Literals {
         constructor(public value : boolean) {}
         toNum    () : number  { return this.value ? 1 : 0 }
         toBool   () : boolean { return this.value }
-        toStr    () : string  { return this.value.toString() }
+        toStr    () : string  { return String(this.value) }
         toNative () : any { return this.value }
     }
 
@@ -19,7 +19,7 @@ export namespace Literals {
         constructor(public value : number) {}
         toNum    () : number  { return this.value }
         toBool   () : boolean { return this.value != 0 ? true : false }
-        toStr    () : string  { return this.value.toString() }
+        toStr    () : string  { return String(this.value) }
         toNative () : any { return this.value }
     }
 
@@ -53,7 +53,7 @@ export namespace Literals {
         constructor(public value : Types.Literal) {}
         toNum    () : number  { return this.value.toNum() }
         toBool   () : boolean { return this.value.toBool() }
-        toStr    () : string  { return `<${this.value.toStr()}>` }
+        toStr    () : string  { return this.value.toStr() }
         toNative () : any { return this.value.toNative() }
     }
 
@@ -75,7 +75,7 @@ export namespace Literals {
         constructor() { this.$items = new Map<string, Types.Literal>() }
         toNum    () : number  { throw new Error("TODO") }
         toBool   () : boolean { throw new Error("TODO") }
-        toStr    () : string  { throw new Error("TODO") }
+        toStr    () : string  { return `Pad(${this.$items.size})` }
         toNative () : any { return this.$items }
 
         free (name : string) : void { this.$items.delete(name) }
@@ -93,7 +93,7 @@ export namespace Literals {
         constructor(items : Types.Literal[] = []) { this.$items = items }
         toNum    () : number  { throw new Error("TODO") }
         toBool   () : boolean { throw new Error("TODO") }
-        toStr    () : string  { throw new Error("TODO") }
+        toStr    () : string  { return `Stack(${this.$items.length})` }
 
         toNative () : any { return this.$items.map((l) => l.toNative()) }
         toArray  () : Types.Literal[] { return this.$items }

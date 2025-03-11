@@ -89,26 +89,47 @@ export namespace Images {
         // =====================================================================
 
         // ---------------------------------------------------------------------
+        // Variables
+        // ---------------------------------------------------------------------
+
+        bindNativeWord('>CELL', (r:Types.Runtime) => {
+            let value = r.stack.pop() as Types.Literal;
+            r.stack.push(new Literals.Cell(value));
+        });
+
+        bindNativeWord('>CELL!', (r:Types.Runtime) => {
+            let value = r.stack.pop() as Types.Literal;
+            let cell  = r.stack.pop() as Literals.Cell;
+            cell.value = value;
+        });
+
+        // ---------------------------------------------------------------------
         // Import modules
         // ---------------------------------------------------------------------
 
-        bindNativeWord('>IMPORT!', (r:Types.Runtime) => {
+        bindNativeWord('>IMPORT', (r:Types.Runtime) => {
             let symbol = r.stack.pop() as Literals.Sym;
             catalog.importVolume(symbol.toName());
         });
 
         // ---------------------------------------------------------------------
-        // Bind/Unbind
+        // Word Bind/Unbind
         // ---------------------------------------------------------------------
 
         bindNativeWord(':=', (r:Types.Runtime) => {
             let symbol = r.stack.pop() as Literals.Sym;
-            let block  = r.stack.pop() as Literals.Block;
-            catalog.currentVolume().bind({
-                type : 'USER',
-                name : symbol.toName(),
-                body : block.tape
-            });
+            let value  = r.stack.pop() as Types.Literal;
+            let word : Dictionary.Word;
+            if (value instanceof Literals.Block) {
+                word = { type : 'USER', name : symbol.toName(), body : (value as Literals.Block).tape };
+            }
+            else if (value instanceof Literals.Cell) {
+                word = { type : 'CELL', name : symbol.toName(), cell : value as Literals.Cell };
+            }
+            else {
+                word = { type : 'CONST', name : symbol.toName(), const : value };
+            }
+            catalog.currentVolume().bind(word);
         });
 
         bindNativeWord(':^', (r:Types.Runtime) => {
@@ -182,7 +203,7 @@ export namespace Images {
         bindNativeWord('~', (r:Types.Runtime) => {
             let rhs = r.stack.pop() as Types.Literal;
             let lhs = r.stack.pop() as Types.Literal;
-            r.stack.push(new Literals.Str(lhs.toNative() + rhs.toNative()))
+            r.stack.push(new Literals.Str(lhs.toStr() + rhs.toStr()))
         });
 
         // ---------------------------------------------------------------------
@@ -236,31 +257,31 @@ export namespace Images {
         bindNativeWord('+', (r:Types.Runtime) => {
             let rhs = r.stack.pop() as Types.Literal;
             let lhs = r.stack.pop() as Types.Literal;
-            r.stack.push(new Literals.Num(lhs.toNative() + rhs.toNative()))
+            r.stack.push(new Literals.Num(lhs.toNum() + rhs.toNum()))
         });
 
         bindNativeWord('-', (r:Types.Runtime) => {
             let rhs = r.stack.pop() as Types.Literal;
             let lhs = r.stack.pop() as Types.Literal;
-            r.stack.push(new Literals.Num(lhs.toNative() - rhs.toNative()))
+            r.stack.push(new Literals.Num(lhs.toNum() - rhs.toNum()))
         });
 
         bindNativeWord('*', (r:Types.Runtime) => {
             let rhs = r.stack.pop() as Types.Literal;
             let lhs = r.stack.pop() as Types.Literal;
-            r.stack.push(new Literals.Num(lhs.toNative() * rhs.toNative()))
+            r.stack.push(new Literals.Num(lhs.toNum() * rhs.toNum()))
         });
 
         bindNativeWord('/', (r:Types.Runtime) => {
             let rhs = r.stack.pop() as Types.Literal;
             let lhs = r.stack.pop() as Types.Literal;
-            r.stack.push(new Literals.Num(lhs.toNative() / rhs.toNative()))
+            r.stack.push(new Literals.Num(lhs.toNum() / rhs.toNum()))
         });
 
         bindNativeWord('%', (r:Types.Runtime) => {
             let rhs = r.stack.pop() as Types.Literal;
             let lhs = r.stack.pop() as Types.Literal;
-            r.stack.push(new Literals.Num(lhs.toNative() % rhs.toNative()))
+            r.stack.push(new Literals.Num(lhs.toNum() % rhs.toNum()))
         });
 
         catalog.exitCurrentVolume();

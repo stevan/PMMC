@@ -28,7 +28,7 @@ async function Test012 () {
         : <li/> <li> SWAP </li> ;
         ;;
     `+
-    " `HTML >IMPORT "
+    " ~HTML >IMPORT "
     +`
         ----
         <html>
@@ -37,9 +37,11 @@ async function Test012 () {
            </head>
            <body>
                "Hello HTML!" <h1/>
+                ----
                 <ul>
                     4 0 DO .R <li/> LOOP
                 </ul>
+                ====
            </body>
         </html>
         ====

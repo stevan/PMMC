@@ -12,7 +12,7 @@ export class Parser implements Types.Flow<Types.Token, Types.Parsed> {
     }
 
     private createConstToken (token : Types.Token) : Types.Const {
-        console.log("CREATE", token);
+        //console.log("CREATE", token);
         switch (token.type) {
         case Types.TokenType.STRING:
             return { type : 'CONST', token : token, literalType : Types.LiteralType.Str };

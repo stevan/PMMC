@@ -16,7 +16,7 @@ async function Test020 () {
 
             "'hello' == 'hello'" "hello" "hello" is
 
-            100 >CELL \`$x :=
+            ~$x 100 >CELL :=
             "$x == 100" $x 100 is
             $x 200 >CELL!
             "$x != 100" $x 100 != ok

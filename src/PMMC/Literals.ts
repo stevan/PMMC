@@ -38,7 +38,14 @@ export namespace Literals {
         toStr    () : string  { return this.value }
         toNative () : any { return this.value }
 
-        toName () : string { return this.value.slice(1) }
+        toName () : string {
+            // FIXME
+            if (this.value.indexOf('%::') == 0) {
+                return this.value.slice(3);
+            } else {
+                return this.value.slice(1);
+            }
+        }
     }
 
     export class Block implements Types.Literal {

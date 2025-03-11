@@ -8,9 +8,8 @@ async function Test015 () {
     let dict = new PMMC.Dictionary.Catalog();
     PMMC.Images.createCoreVolume(dict);
 
-    let source = new PMMC.Sources.FromString(
-    " 10 >CELL `foo := "+ // create the cell called foo
-    `
+    let source = new PMMC.Sources.FromString(`
+        ~foo 10 >CELL :=
         foo DUP >PUT!               // print it
         DUP 5 * >CELL!              // operate and store the result
         foo >PUT!                   // print it again (value is updated)

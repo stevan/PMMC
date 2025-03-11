@@ -4,8 +4,8 @@
 
 :: Test
 
-    0 >CELL `$NUM_TESTS :=
-    0 >CELL `$NUM_FAILS :=
+    ~$NUM_TESTS 0 >CELL :=
+    ~$NUM_FAILS 0 >CELL :=
 
     : ++tests    $NUM_TESTS DUP DUP 1 + >CELL! ;
     : ++failure  $NUM_FAILS DUP DUP 1 + >CELL! ;

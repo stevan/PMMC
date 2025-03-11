@@ -11,6 +11,7 @@ async function Test001 () {
             '"hello world!" say',
             '10 "world" #t',
             'this is the "end" of 10000',
+            ' ~ ~~ ~foo ~$foo foo $foo ',
         ]
     );
 

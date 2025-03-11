@@ -52,8 +52,8 @@ export namespace Images {
 
         // ---------------------------------------------------------------------
 
-        toConsole () : Types.Sink<Types.OutputToken> {
-            return new Sinks.Console()
+        toConsole (showLog : boolean = false) : Types.Sink<Types.OutputToken> {
+            return new Sinks.Console(showLog)
         }
 
         // ---------------------------------------------------------------------
@@ -84,7 +84,7 @@ export namespace Images {
             return super.run(
                 this.fromSources([
                     this.fromFile('./lib/Test.pmmc'),
-                    this.fromString("`Test >IMPORT"),
+                    this.fromString("~Test >IMPORT"),
                     input,
                 ]),
                 output
@@ -133,8 +133,8 @@ export namespace Images {
         // ---------------------------------------------------------------------
 
         bindNativeWord(':=', (r:Types.Runtime) => {
-            let symbol = r.stack.pop() as Literals.Sym;
             let value  = r.stack.pop() as Types.Literal;
+            let symbol = r.stack.pop() as Literals.Sym;
             let word : Dictionary.Word;
             if (value instanceof Literals.Block) {
                 word = { type : 'USER', name : symbol.toName(), body : (value as Literals.Block).tape };

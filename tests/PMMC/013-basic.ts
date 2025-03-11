@@ -9,14 +9,14 @@ async function Test013 () {
     PMMC.Images.createCoreVolume(dict);
 
     // symbol table manipulation
-    let source = new PMMC.Sources.FromString("\
-        [ 10 0 ] `foo :=                      \
-        foo                                   \
-        [ 10000 100 ] `foo :=                 \
-        foo                                   \
-        `foo :^                               \
-        foo                                   \
-    ");
+    let source = new PMMC.Sources.FromString(`
+        ~foo [ 10 0 ] :=
+        foo
+        ~foo [ 10000 100 ] :=
+        foo
+        ~foo :^
+        foo
+    `);
 
     let tokenizer   = new PMMC.Tokenizer();
     let parser      = new PMMC.Parser();

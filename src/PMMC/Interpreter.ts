@@ -28,8 +28,8 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
     async *flow (source : Types.Stream<Types.Compiled>, callee : string = 'main') : Types.Stream<Types.OutputToken> {
         yield this.createOutputToken(Types.OutputHandle.INFO, [ `ENTER   > ${callee}` ]);
         for await (const compiled of source) {
-            let beforeStack   = this.stack.copyStack();
-            let beforeControl = this.control.copyStack();
+            yield this.createOutputToken(Types.OutputHandle.DEBUG, [ "+stck[]:│", this.stack   ]);
+            yield this.createOutputToken(Types.OutputHandle.DEBUG, [ "+ctrl[]:│", this.control ]);
             switch (compiled.type) {
             case 'EXECUTE':
                 if (compiled.parsed.type == 'CALL') {
@@ -117,8 +117,8 @@ export class Interpreter implements Types.Runtime, Types.Flow<Types.Compiled, Ty
                 yield this.createOutputToken(Types.OutputHandle.WARN, [ "TODO", compiled ]);
                 break;
             }
-            yield this.createOutputToken(Types.OutputHandle.DEBUG, [ " stck[]:│", beforeStack,   "╌", this.stack   ]);
-            yield this.createOutputToken(Types.OutputHandle.DEBUG, [ " ctrl[]:│", beforeControl, "╌", this.control ]);
+            yield this.createOutputToken(Types.OutputHandle.DEBUG, [ "-stck[]:│", this.stack   ]);
+            yield this.createOutputToken(Types.OutputHandle.DEBUG, [ "-ctrl[]:│", this.control ]);
         }
         yield this.createOutputToken(Types.OutputHandle.INFO, [ "EXIT    ^", this.stack ]);
     }

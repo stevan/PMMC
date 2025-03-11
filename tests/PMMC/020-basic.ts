@@ -2,13 +2,20 @@
 import * as PMMC from '../../src/PMMC';
 
 async function Test020 () {
-    let dict   = new PMMC.Dictionary.Catalog();
+    let dict = new PMMC.Dictionary.Catalog();
     PMMC.Images.createCoreVolume(dict);
 
     let source = new PMMC.Sources.FromSources([
         new PMMC.Sources.FromFile('./lib/Test.pmmc'),
+        new PMMC.Sources.FromString("`Test >IMPORT"),
         new PMMC.Sources.FromString(`
-            Test::hello >PUT!
+            "True is true"   #t ok
+            "False is false" #f ! ok
+
+            "True is == True"   #t #t is
+            "False is == False" #f #f is
+
+            done-testing
         `)
     ]);
 

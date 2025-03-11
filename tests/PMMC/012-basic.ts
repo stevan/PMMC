@@ -1,8 +1,11 @@
 
+import { Test } from '../Test';
+
 import * as PMMC from '../../src/PMMC';
 
 async function Test012 () {
-    let dict   = new PMMC.Dictionary.Catalog();
+    let test = new Test.Simple();
+    let dict = new PMMC.Dictionary.Catalog();
     PMMC.Images.createCoreVolume(dict);
 
     let source = new PMMC.Sources.FromString(`
@@ -25,7 +28,7 @@ async function Test012 () {
         : <li/> <li> SWAP </li> ;
         ;;
     `+
-    " `HTML >IMPORT! "
+    " `HTML >IMPORT "
     +`
         ----
         <html>
@@ -54,6 +57,14 @@ async function Test012 () {
                     parser.flow(
                         tokenizer.flow(
                             source.flow())))));
+
+    test.is(
+        interpreter.stack.toNative().join(" "),
+        "<html><head><title>Hello World</title></head><body><h1>Hello HTML!</h1><ul><li>1</li><li>2</li><li>3</li><li>4</li></ul></body></html>",
+        '... got the expected result'
+    );
+
+    test.done();
 }
 
 Test012();

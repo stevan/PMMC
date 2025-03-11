@@ -1,0 +1,2 @@
+#!/bin/sh
+prove --ext '.ts' -e 'npx ts-node' $@

@@ -1,7 +1,11 @@
 
+import { Test } from '../Test';
+
 import * as PMMC from '../../src/PMMC';
 
 async function Test001 () {
+    let test = new Test.Simple();
+
     let source = new PMMC.Sources.FromArray(
         [
             '"hello world!" say',
@@ -13,8 +17,10 @@ async function Test001 () {
     let tokenizer = new PMMC.Tokenizer();
 
     for await (const input of tokenizer.flow(source.flow())) {
-        console.log("GOT", input);
+        test.ok(!!input, `... got the Tokenizer output (${JSON.stringify(input)})`);
     }
+
+    test.done();
 }
 
 Test001();

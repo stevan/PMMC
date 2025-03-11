@@ -1,8 +1,11 @@
 
+import { Test } from '../Test';
+
 import * as PMMC from '../../src/PMMC';
 
 async function Test011 () {
-    let dict   = new PMMC.Dictionary.Catalog();
+    let test = new Test.Simple();
+    let dict = new PMMC.Dictionary.Catalog();
     PMMC.Images.createCoreVolume(dict);
 
     let source = new PMMC.Sources.FromString(`
@@ -50,6 +53,14 @@ async function Test011 () {
                     parser.flow(
                         tokenizer.flow(
                             source.flow())))));
+
+    test.is(
+        interpreter.stack.toNative().join(" "),
+        "8 6 4 2 0",
+        '... got the expected result'
+    );
+
+    test.done();
 }
 
 Test011();

@@ -1,8 +1,11 @@
 
+import { Test } from '../Test';
+
 import * as PMMC from '../../src/PMMC';
 
 async function Test004 () {
-    let dict   = new PMMC.Dictionary.Catalog();
+    let test = new Test.Simple();
+    let dict = new PMMC.Dictionary.Catalog();
     PMMC.Images.createCoreVolume(dict);
 
     let source = new PMMC.Sources.FromString(`
@@ -17,8 +20,10 @@ async function Test004 () {
     let interpreter = new PMMC.Interpreter(dict);
 
     for await (const input of interpreter.flow(compiler.flow(parser.flow(tokenizer.flow(source.flow()))))) {
-        console.log("GOT", input);
+        test.ok(!!input, `... got the Interpreter output (${JSON.stringify(input)})`);
     }
+
+    test.done();
 }
 
 Test004();

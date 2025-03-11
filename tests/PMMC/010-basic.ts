@@ -1,8 +1,11 @@
 
+import { Test } from '../Test';
+
 import * as PMMC from '../../src/PMMC';
 
 async function Test010 () {
-    let dict   = new PMMC.Dictionary.Catalog();
+    let test = new Test.Simple();
+    let dict = new PMMC.Dictionary.Catalog();
     PMMC.Images.createCoreVolume(dict);
 
     let source = new PMMC.Sources.FromString(`
@@ -74,18 +77,20 @@ async function Test010 () {
     let interpreter = new PMMC.Interpreter(dict);
     let output      = new PMMC.Sinks.Console();
 
-    console.log('----------------------------');
-    for await (const input of compiler.flow(parser.flow(tokenizer.flow(source.flow())))) {
-        console.log("GOT", input);
-    }
-    console.log('----------------------------');
-
     await output.flow(
             interpreter.flow(
                 compiler.flow(
                     parser.flow(
                         tokenizer.flow(
                             source.flow())))));
+
+    test.is(
+        interpreter.stack.toNative().join(" "),
+        "10 reject 19 small 22 medium 25 large 29 extra large 31 error",
+        '... got the expected result'
+    );
+
+    test.done();
 }
 
 Test010();

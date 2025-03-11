@@ -4,6 +4,34 @@
 
 :: Test
 
-: hello "Hello Testing World" ;
+    0 >CELL `$NUM_TESTS :=
+    0 >CELL `$NUM_FAILS :=
+
+    : ++tests    $NUM_TESTS DUP DUP 1 + >CELL! ;
+    : ++failure  $NUM_FAILS DUP DUP 1 + >CELL! ;
+
+    : out >PUT! ;
+    : diag "# " SWAP ~ out ;
+
+    : pass
+        "ok " ++tests ~ " - ... " ~ SWAP ~ out
+    ;
+
+    : fail
+        "not ok " ++tests ~ " - ... " ~ SWAP ~ out
+        ++failure
+    ;
+
+    : ok IF pass ELSE fail THEN ;
+    : is == ok ;
+
+    : done-testing
+        "1.." $NUM_TESTS ~ out
+        $NUM_FAILS 0 != IF
+            "# Looks like you failed " $NUM_FAILS ~
+            " test(s) of " $NUM_TESTS ~
+            ~ diag
+        THEN
+    ;
 
 ;;

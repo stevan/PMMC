@@ -1,8 +1,11 @@
 
+import { Test } from '../Test';
+
 import * as PMMC from '../../src/PMMC';
 
 async function Test013 () {
-    let dict   = new PMMC.Dictionary.Catalog();
+    let test = new Test.Simple();
+    let dict = new PMMC.Dictionary.Catalog();
     PMMC.Images.createCoreVolume(dict);
 
     // symbol table manipulation
@@ -29,8 +32,16 @@ async function Test013 () {
                             tokenizer.flow(
                                 source.flow())))));
     } catch (e) {
-        console.log("Expected error: ", e);
+        test.pass("... got the expected error");
     }
+
+    test.is(
+        interpreter.stack.toNative().join(" "),
+        "10 0 10000 100",
+        '... got the expected result'
+    );
+
+    test.done();
 }
 
 Test013();

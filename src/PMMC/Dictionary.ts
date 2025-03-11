@@ -12,13 +12,17 @@ export namespace Dictionary {
     export type Word = UserWord | NativeWord;
 
     export class Catalog {
-        public shelf : Map<string, Volume>;
-        public stack : Volume[];
+        public shelf   : Map<string, Volume>;
+        public stack   : Volume[];
+        public imports : Volume[];
 
         constructor () {
-            this.shelf = new Map<string, Volume>();
-            this.stack = new Array<Volume>();
+            this.shelf   = new Map<string, Volume>();
+            this.stack   = new Array<Volume>();
+            this.imports = new Array<Volume>();
         }
+
+        import (vol : Volume) : void { this.imports.push(vol) }
 
         addVolume (vol : Volume) : void { this.shelf.set(vol.name, vol) }
 
@@ -52,6 +56,7 @@ export namespace Dictionary {
                 this.shelf.get('CORE') as Volume,
                 this.shelf.get('_')    as Volume,
                 this.shelf.get('__')   as Volume,
+                ...this.imports
             ];
 
             for (const dict of searchCandidates) {

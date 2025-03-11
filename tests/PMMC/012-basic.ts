@@ -6,6 +6,7 @@ async function Test012 () {
     PMMC.Images.createCoreVolume(dict);
 
     let source = new PMMC.Sources.FromString(`
+        :: HTML
         : ---- "!!PUSHMARK!!" ;
         : ==== BEGIN ~ OVER ---- == UNTIL SWAP DROP ;
 
@@ -22,7 +23,10 @@ async function Test012 () {
         : <ul> "<ul>" ; : </ul> "</ul>" ;
         : <li> "<li>" ; : </li> "</li>" ;
         : <li/> <li> SWAP </li> ;
-
+        ;;
+    `+
+    "``HTML >IMPORT!"
+    +`
         ----
         <html>
            <head>

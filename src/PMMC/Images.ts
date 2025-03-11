@@ -116,12 +116,13 @@ export namespace Images {
         // ---------------------------------------------------------------------
         // Stack Ops
         // ---------------------------------------------------------------------
-        // DUP   ( a     -- a a   ) duplicate the top of the stack
-        // SWAP  ( b a   -- a b   ) swap the top two items on the stack
-        // DROP  ( a     --       ) drop the item at the top of the stack
-        // OVER  ( b a   -- b a b ) like DUP, but for the 2nd item on the stack
-        // ROT   ( c b a -- b a c ) rotate the 3rd item to the top of the stack
-        // -ROT  ( c b a -- a c b ) rotate the 1st item to the 3rd position
+        // DUP   ( a     -- a a   )   duplicate the top of the stack
+        // SWAP  ( b a   -- a b   )   swap the top two items on the stack
+        // DROP  ( a     --       )   drop the item at the top of the stack
+        // OVER  ( b a   -- b a b )   like DUP, but for the 2nd item on the stack
+        // RDUP  ( c b a -- c b a c ) like DUP, but for the 3rd item on the stack
+        // ROT   ( c b a -- b a c )   rotate the 3rd item to the top of the stack
+        // -ROT  ( c b a -- a c b )   rotate the 1st item to the 3rd position
 
         bindNativeWord('DUP',  (r:Types.Runtime) => r.stack.dup());
         bindNativeWord('DROP', (r:Types.Runtime) => r.stack.drop());
@@ -136,10 +137,10 @@ export namespace Images {
         // ---------------------------------------------------------------------
         // Contorl Stack Ops
         // ---------------------------------------------------------------------
-        // >R!  ( a --   ) ( a --   ) take from stack and push to control stack
-        // <R!  (   -- a ) (   -- a ) take from control stack and push to stack
-        // .R!  (   -- a ) ( a -- a ) push top of control stack to stack
-        // ^R!  (   --   ) (   --   ) drop the top of the control stack
+        // >R  ( a --   ) ( a --   ) take from stack and push to control stack
+        // <R  (   -- a ) (   -- a ) take from control stack and push to stack
+        // .R  (   -- a ) ( a -- a ) push top of control stack to stack
+        // ^R  (   --   ) (   --   ) drop the top of the control stack
         // ---------------------------------------------------------------------
 
         bindNativeWord('>R', (r:Types.Runtime) => r.control.push(r.stack.pop()));

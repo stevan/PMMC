@@ -76,6 +76,22 @@ export namespace Images {
     // Image Utilities
     // -------------------------------------------------------------------------
 
+    export class TestImage extends Image {
+        override async run (
+            input  : Types.Source<Types.SourceCode>,
+            output : Types.Sink<Types.OutputToken>
+        ) : Promise<void> {
+            return super.run(
+                this.fromSources([
+                    this.fromFile('./lib/Test.pmmc'),
+                    this.fromString("`Test >IMPORT"),
+                    input,
+                ]),
+                output
+            );
+        }
+    }
+
     export function createCoreVolume (catalog : Dictionary.Catalog) : void {
         let vol = catalog.createVolume('CORE');
 
